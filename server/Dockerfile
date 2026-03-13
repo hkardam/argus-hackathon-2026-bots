@@ -1,23 +1,14 @@
-# Stage 1: Build
-FROM maven:3.9.5-eclipse-temurin-21-alpine AS build
-WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn package -DskipTests
+FROM python:3.11-slim
 
-# Stage 2: Development
-FROM maven:3.9.5-eclipse-temurin-21-alpine AS development
 WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . .
-EXPOSE 8086
-CMD ["mvn", "spring-boot:run"]
 
-# Stage 3: Production
-FROM eclipse-temurin:21-jre-alpine AS production
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+RUN mkdir -p uploads
+
 EXPOSE 8086
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8086", "--reload"]
