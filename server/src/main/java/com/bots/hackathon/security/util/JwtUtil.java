@@ -16,11 +16,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
-    @Value("${application.security.jwt.expiration}")
-    private long jwtExpiration;
-    private SecretKey key;
+  @Value("${application.security.jwt.secret-key}")
+  private String secretKey;
+
+  @Value("${application.security.jwt.expiration}")
+  private long jwtExpiration;
+
+  private SecretKey key;
 
   @PostConstruct
   public void init() {

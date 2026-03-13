@@ -41,9 +41,9 @@ public class AuthorizationGuard {
 
   /**
    * Validates access to a specific Application. Use in
-   * controllers: @PreAuthorize("@securityGuard.canAccessApplication(#applicationId)")
+   * controllers: @PreAuthorize("@securityGuard.canAccessApplication(#id)")
    */
-  public boolean canAccessApplication(Long applicationId) {
+  public boolean canAccessApplication(Object applicationId) {
     if (isPlatformAdmin() || hasRole(Role.PROGRAM_OFFICER)) {
       return true;
     }
