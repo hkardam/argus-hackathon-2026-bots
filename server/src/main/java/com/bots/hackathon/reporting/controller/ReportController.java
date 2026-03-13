@@ -34,16 +34,18 @@ public class ReportController {
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<ReportResponse>> getById(@PathVariable UUID id) {
-        // TODO: Verify user has access to this report's grant
-        return ResponseEntity.ok(ApiResponse.ok(reportService.getById(id)));
+    public ResponseEntity<ApiResponse<ReportResponse>> getById(
+            @PathVariable UUID id, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(reportService.getById(id, userId)));
     }
 
     @GetMapping("/grant/{grantAwardId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<ReportResponse>>> getByGrant(
-            @PathVariable UUID grantAwardId) {
-        // TODO: Verify user has access to this grant
-        return ResponseEntity.ok(ApiResponse.ok(reportService.getByGrantAwardId(grantAwardId)));
+            @PathVariable UUID grantAwardId, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(
+                ApiResponse.ok(reportService.getByGrantAwardId(grantAwardId, userId)));
     }
 }

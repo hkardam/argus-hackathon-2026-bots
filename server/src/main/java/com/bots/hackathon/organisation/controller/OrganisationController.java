@@ -36,9 +36,11 @@ public class OrganisationController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('APPLICANT') or @securityGuard.isStaff()")
     public ResponseEntity<ApiResponse<OrganisationResponse>> update(
-            @PathVariable UUID id, @Valid @RequestBody UpdateOrganisationRequest request) {
-        // TODO: Verify current user owns this organisation or is staff
-        return ResponseEntity.ok(ApiResponse.ok(organisationService.update(id, request)));
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateOrganisationRequest request,
+            Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(organisationService.update(id, request, userId)));
     }
 
     @GetMapping("/{id}")

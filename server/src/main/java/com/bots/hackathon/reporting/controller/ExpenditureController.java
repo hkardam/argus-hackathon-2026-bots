@@ -46,9 +46,9 @@ public class ExpenditureController {
     @GetMapping("/grant/{grantAwardId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<ExpenditureRecordResponse>>> listByGrant(
-            @PathVariable UUID grantAwardId) {
-        // TODO: Verify user has access to this grant
+            @PathVariable UUID grantAwardId, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
         return ResponseEntity.ok(
-                ApiResponse.ok(expenditureService.listByGrantAwardId(grantAwardId)));
+                ApiResponse.ok(expenditureService.listByGrantAwardId(grantAwardId, userId)));
     }
 }

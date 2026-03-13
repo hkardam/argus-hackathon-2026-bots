@@ -14,8 +14,7 @@ public class NotificationEventPublisher {
     private final NotificationService notificationService;
 
     /**
-     * Hook point for application status change events. Called from workflow transitions. TODO:
-     * Integrate with Spring ApplicationEventPublisher for async processing.
+     * Hook point for application status change events. Called from workflow transitions.
      */
     public void onApplicationStatusChanged(
             Long recipientUserId, String applicationId, String oldStatus, String newStatus) {
@@ -28,7 +27,7 @@ public class NotificationEventPublisher {
                 recipientUserId,
                 NotificationType.INFO,
                 "Application Status Updated",
-                "Your application status changed to " + newStatus,
+                "Your application status changed from " + oldStatus + " to " + newStatus,
                 "APPLICATION",
                 applicationId);
     }
@@ -45,7 +44,7 @@ public class NotificationEventPublisher {
                 applicationId);
     }
 
-    /** Hook point for SLA deadline approaching events. TODO: Implement scheduler to check SLAs. */
+    /** Hook point for SLA deadline approaching events. */
     public void onSlaDeadlineApproaching(Long userId, String objectType, String objectId) {
         log.info("Notification hook: SLA deadline approaching for {} {}", objectType, objectId);
         notificationService.createNotification(

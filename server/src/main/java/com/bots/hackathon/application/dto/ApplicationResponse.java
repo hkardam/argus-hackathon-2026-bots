@@ -16,5 +16,6 @@ public record ApplicationResponse(
         ApplicationStatus status,
         LocalDateTime submittedAt,
         LocalDateTime slaDeadline,
+        boolean overdue,
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {}

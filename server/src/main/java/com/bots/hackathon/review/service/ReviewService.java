@@ -1,11 +1,19 @@
 package com.bots.hackathon.review.service;
 
+import com.bots.hackathon.application.model.Application;
+import com.bots.hackathon.application.repo.ApplicationRepository;
 import com.bots.hackathon.audit.aspect.LoggableAction;
+import com.bots.hackathon.auth.model.UserEntity;
+import com.bots.hackathon.auth.repo.UserRepository;
+import com.bots.hackathon.common.exception.BusinessException;
+import com.bots.hackathon.common.exception.ResourceNotFoundException;
+import com.bots.hackathon.notification.event.NotificationEventPublisher;
 import com.bots.hackathon.review.dto.*;
 import com.bots.hackathon.review.model.Review;
 import com.bots.hackathon.review.model.ReviewAssignment;
 import com.bots.hackathon.review.repo.ReviewAssignmentRepository;
 import com.bots.hackathon.review.repo.ReviewRepository;
+import com.bots.hackathon.security.guard.AuthorizationGuard;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +26,43 @@ public class ReviewService {
 
     private final ReviewAssignmentRepository assignmentRepository;
     private final ReviewRepository reviewRepository;
+    private final ApplicationRepository applicationRepository;
+    private final UserRepository userRepository;
+    private final AuthorizationGuard authorizationGuard;
+    private final NotificationEventPublisher notificationEventPublisher;
 
     @Transactional
     @LoggableAction(actionType = "ASSIGN_REVIEWER", objectType = "REVIEW_ASSIGNMENT")
     public ReviewAssignmentResponse assignReviewer(
             AssignReviewerRequest request, Long assignedByUserId) {
-        // TODO: Check conflict of interest via AuthorizationGuard
+        Application application =
+                applicationRepository
+                        .findByIdAndDeletedFalse(request.applicationId())
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException(
+                                        "Application", request.applicationId()));
+
+        UserEntity reviewer =
+                userRepository
+                        .findById(request.reviewerUserId())
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException(
+                                        "User", request.reviewerUserId()));
+
+        UserEntity applicant =
+                userRepository
+                        .findById(application.getApplicantUserId())
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException(
+                                        "User", application.getApplicantUserId()));
+
+        if (!authorizationGuard.passesConflictOfInterestCheck(
+                reviewer.getEmail(), applicant.getEmail())) {
+            throw new BusinessException(
+                    "Reviewer has a conflict of interest with the applicant "
+                            + "(matching email domain)");
+        }
+
         ReviewAssignment assignment =
                 ReviewAssignment.builder()
                         .applicationId(request.applicationId())
@@ -31,7 +70,13 @@ public class ReviewService {
                         .assignedByUserId(assignedByUserId)
                         .deadline(request.deadline())
                         .build();
-        return toAssignmentResponse(assignmentRepository.save(assignment));
+        ReviewAssignment saved = assignmentRepository.save(assignment);
+
+        notificationEventPublisher.onReviewAssigned(
+                request.reviewerUserId(),
+                request.applicationId().toString());
+
+        return toAssignmentResponse(saved);
     }
 
     @Transactional(readOnly = true)
@@ -59,7 +104,6 @@ public class ReviewService {
 
         Review saved = reviewRepository.save(review);
 
-        // Mark assignment as completed if linked
         if (request.assignmentId() != null) {
             assignmentRepository
                     .findById(request.assignmentId())

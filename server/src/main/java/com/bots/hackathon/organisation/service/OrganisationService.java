@@ -1,23 +1,27 @@
 package com.bots.hackathon.organisation.service;
 
 import com.bots.hackathon.audit.aspect.LoggableAction;
+import com.bots.hackathon.common.exception.AccessDeniedException;
 import com.bots.hackathon.common.exception.ResourceNotFoundException;
 import com.bots.hackathon.organisation.dto.CreateOrganisationRequest;
 import com.bots.hackathon.organisation.dto.OrganisationResponse;
 import com.bots.hackathon.organisation.dto.UpdateOrganisationRequest;
 import com.bots.hackathon.organisation.model.Organisation;
 import com.bots.hackathon.organisation.repo.OrganisationRepository;
-import java.util.List;
-import java.util.UUID;
+import com.bots.hackathon.security.guard.AuthorizationGuard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class OrganisationService {
 
     private final OrganisationRepository organisationRepository;
+    private final AuthorizationGuard authorizationGuard;
 
     @Transactional
     @LoggableAction(actionType = "CREATE", objectType = "ORGANISATION")
@@ -39,11 +43,16 @@ public class OrganisationService {
             actionType = "UPDATE",
             objectType = "ORGANISATION",
             objectIdExpression = "#id.toString()")
-    public OrganisationResponse update(UUID id, UpdateOrganisationRequest request) {
+    public OrganisationResponse update(UUID id, UpdateOrganisationRequest request, Long userId) {
         Organisation org =
                 organisationRepository
                         .findByIdAndDeletedFalse(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Organisation", id));
+
+        if (!org.getOwnerUserId().equals(userId) && !authorizationGuard.isStaff()) {
+            throw new AccessDeniedException(
+                    "User does not own organisation " + id);
+        }
 
         if (request.name() != null) org.setName(request.name());
         if (request.registrationNumber() != null)

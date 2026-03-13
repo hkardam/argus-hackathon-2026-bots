@@ -36,17 +36,20 @@ public class ApplicationController {
     @PutMapping("/{id}/sections")
     @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<ApiResponse<Void>> updateSection(
-            @PathVariable UUID id, @Valid @RequestBody UpdateSectionRequest request) {
-        // TODO: Verify current user owns this application
-        applicationService.updateSection(id, request);
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateSectionRequest request,
+            Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        applicationService.updateSection(id, request, userId);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
 
     @PostMapping("/{id}/submit")
     @PreAuthorize("hasRole('APPLICANT')")
-    public ResponseEntity<ApiResponse<ApplicationResponse>> submit(@PathVariable UUID id) {
-        // TODO: Verify current user owns this application
-        return ResponseEntity.ok(ApiResponse.ok(applicationService.submit(id)));
+    public ResponseEntity<ApiResponse<ApplicationResponse>> submit(
+            @PathVariable UUID id, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.submit(id, userId)));
     }
 
     @GetMapping("/{id}")
