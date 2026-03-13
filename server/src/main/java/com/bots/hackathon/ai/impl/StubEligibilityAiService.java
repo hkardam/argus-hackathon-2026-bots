@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StubEligibilityAiService implements EligibilityAiService {
 
-  @Override
-  public EligibilityAiResponse checkEligibility(EligibilityAiRequest request) {
-    log.info("AI Eligibility check stub called for application: {}", request.applicationId());
-    // TODO: Replace with actual AI integration
-    return new EligibilityAiResponse(true, List.of(), "AI Suggested: Stub response", 0.0);
-  }
+    @Override
+    public EligibilityAiResponse checkEligibility(EligibilityAiRequest request) {
+        log.info("AI Eligibility check stub called for application: {}", request.applicationId());
+        // TODO: Replace with actual AI integration
+        return new EligibilityAiResponse(true, List.of(), "AI Suggested: Stub response", 0.0);
+    }
 }

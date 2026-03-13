@@ -1,7 +1,6 @@
 package com.bots.hackathon.reporting.controller;
 
-import com.bots.hackathon.auth.model.UserEntity;
-import com.bots.hackathon.auth.repo.UserRepository;
+import com.bots.hackathon.auth.service.AuthService;
 import com.bots.hackathon.common.dto.ApiResponse;
 import com.bots.hackathon.reporting.dto.CreateExpenditureRequest;
 import com.bots.hackathon.reporting.dto.ExpenditureRecordResponse;
@@ -22,40 +21,34 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ExpenditureController {
 
-  private final ExpenditureService expenditureService;
-  private final UserRepository userRepository;
+    private final ExpenditureService expenditureService;
+    private final AuthService authService;
 
-  @PostMapping
-  @PreAuthorize("hasRole('APPLICANT')")
-  public ResponseEntity<ApiResponse<ExpenditureRecordResponse>> create(
-      @Valid @RequestBody CreateExpenditureRequest request) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ApiResponse.ok(expenditureService.create(request)));
-  }
+    @PostMapping
+    @PreAuthorize("hasRole('APPLICANT')")
+    public ResponseEntity<ApiResponse<ExpenditureRecordResponse>> create(
+            @Valid @RequestBody CreateExpenditureRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.ok(expenditureService.create(request)));
+    }
 
-  @PatchMapping("/{id}/verification")
-  @PreAuthorize("hasRole('FINANCE_OFFICER')")
-  public ResponseEntity<ApiResponse<ExpenditureRecordResponse>> updateVerification(
-      @PathVariable UUID id,
-      @Valid @RequestBody UpdateVerificationRequest request,
-      Principal principal) {
-    Long userId = resolveUserId(principal);
-    return ResponseEntity.ok(
-        ApiResponse.ok(expenditureService.updateVerificationStatus(id, request, userId)));
-  }
+    @PatchMapping("/{id}/verification")
+    @PreAuthorize("hasRole('FINANCE_OFFICER')")
+    public ResponseEntity<ApiResponse<ExpenditureRecordResponse>> updateVerification(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateVerificationRequest request,
+            Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(
+                ApiResponse.ok(expenditureService.updateVerificationStatus(id, request, userId)));
+    }
 
-  @GetMapping("/grant/{grantAwardId}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ApiResponse<List<ExpenditureRecordResponse>>> listByGrant(
-      @PathVariable UUID grantAwardId) {
-    // TODO: Verify user has access to this grant
-    return ResponseEntity.ok(ApiResponse.ok(expenditureService.listByGrantAwardId(grantAwardId)));
-  }
-
-  private Long resolveUserId(Principal principal) {
-    return userRepository
-        .findByEmail(principal.getName())
-        .map(UserEntity::getId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found"));
-  }
+    @GetMapping("/grant/{grantAwardId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<List<ExpenditureRecordResponse>>> listByGrant(
+            @PathVariable UUID grantAwardId, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(
+                ApiResponse.ok(expenditureService.listByGrantAwardId(grantAwardId, userId)));
+    }
 }

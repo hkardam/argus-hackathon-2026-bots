@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StubComplianceAiService implements ComplianceAiService {
 
-  @Override
-  public ComplianceAiResponse analyzeCompliance(ComplianceAiRequest request) {
-    log.info("AI Compliance analysis stub called for grant: {}", request.grantAwardId());
-    // TODO: Replace with actual AI integration
-    return new ComplianceAiResponse(
-        ComplianceStatus.UNDER_REVIEW, List.of(), "AI Suggested: Stub response");
-  }
+    @Override
+    public ComplianceAiResponse analyzeCompliance(ComplianceAiRequest request) {
+        log.info("AI Compliance analysis stub called for grant: {}", request.grantAwardId());
+        // TODO: Replace with actual AI integration
+        return new ComplianceAiResponse(
+                ComplianceStatus.UNDER_REVIEW, List.of(), "AI Suggested: Stub response");
+    }
 }

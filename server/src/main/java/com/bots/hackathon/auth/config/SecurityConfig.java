@@ -1,8 +1,11 @@
 package com.bots.hackathon.auth.config;
 
+import com.bots.hackathon.security.exception.SecurityAccessDeniedHandler;
+import com.bots.hackathon.security.exception.SecurityAuthenticationEntryPoint;
 import com.bots.hackathon.security.filter.JwtAuthenticationFilter;
 import com.bots.hackathon.security.filter.RateLimitingFilter;
 import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,52 +23,63 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Allows @PreAuthorize, @PostAuthorize, etc.
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final JwtAuthenticationFilter jwtAuthenticationFilter;
-  private final RateLimitingFilter rateLimitingFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RateLimitingFilter rateLimitingFilter;
+    private final SecurityAuthenticationEntryPoint authenticationEntryPoint;
+    private final SecurityAccessDeniedHandler accessDeniedHandler;
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .csrf(csrf -> csrf.disable()) // Disabled for stateless APIs
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(
-            authorize ->
-                authorize
-                    // Allow unauthenticated access to public endpoints (if any)
-                    .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/oauth2/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
-        .httpBasic(basic -> basic.disable())
-        // Add custom filters before the UsernamePasswordAuthenticationFilter
-        .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    private static final List<String> PUBLIC_ENDPOINTS =
+            List.of("/api/auth/login", "/api/auth/oauth2/**", "/api/auth/health");
 
-    return http.build();
-  }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable()) // Disabled for stateless APIs
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        authorize ->
+                                authorize
+                                        // Allow unauthenticated access to public endpoints (if any)
+                                        .requestMatchers(
+                                                "/api/auth/login",
+                                                "/api/auth/signup",
+                                                "/api/auth/oauth2/**")
+                                        .permitAll()
+                                        .requestMatchers("/api/admin/**")
+                                        .hasRole("PLATFORM_ADMIN")
+                                        .anyRequest()
+                                        .authenticated())
+                .httpBasic(basic -> basic.disable())
+                // Add custom filters before the UsernamePasswordAuthenticationFilter
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+        return http.build();
+    }
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    // Restrict to known domains per requirement
-    configuration.setAllowedOrigins(
-        Arrays.asList("http://localhost:3000", "http://localhost:5173", "http://localhost:8080"));
-    configuration.setAllowedMethods(
-        Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-    configuration.setAllowCredentials(true);
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(
+                Arrays.asList(
+                        "http://localhost:3000", "http://localhost:5173", "http://localhost:8080"));
+        configuration.setAllowedMethods(
+                Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }

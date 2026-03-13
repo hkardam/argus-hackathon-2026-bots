@@ -1,7 +1,6 @@
 package com.bots.hackathon.reporting.controller;
 
-import com.bots.hackathon.auth.model.UserEntity;
-import com.bots.hackathon.auth.repo.UserRepository;
+import com.bots.hackathon.auth.service.AuthService;
 import com.bots.hackathon.common.dto.ApiResponse;
 import com.bots.hackathon.reporting.dto.ReportResponse;
 import com.bots.hackathon.reporting.dto.SubmitReportRequest;
@@ -21,37 +20,32 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ReportController {
 
-  private final ReportService reportService;
-  private final UserRepository userRepository;
+    private final ReportService reportService;
+    private final AuthService authService;
 
-  @PostMapping
-  @PreAuthorize("hasRole('APPLICANT')")
-  public ResponseEntity<ApiResponse<ReportResponse>> submitReport(
-      @Valid @RequestBody SubmitReportRequest request, Principal principal) {
-    Long userId = resolveUserId(principal);
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ApiResponse.ok(reportService.submitReport(request, userId)));
-  }
+    @PostMapping
+    @PreAuthorize("hasRole('APPLICANT')")
+    public ResponseEntity<ApiResponse<ReportResponse>> submitReport(
+            @Valid @RequestBody SubmitReportRequest request, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.ok(reportService.submitReport(request, userId)));
+    }
 
-  @GetMapping("/{id}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ApiResponse<ReportResponse>> getById(@PathVariable UUID id) {
-    // TODO: Verify user has access to this report's grant
-    return ResponseEntity.ok(ApiResponse.ok(reportService.getById(id)));
-  }
+    @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<ReportResponse>> getById(
+            @PathVariable UUID id, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(reportService.getById(id, userId)));
+    }
 
-  @GetMapping("/grant/{grantAwardId}")
-  @PreAuthorize("isAuthenticated()")
-  public ResponseEntity<ApiResponse<List<ReportResponse>>> getByGrant(
-      @PathVariable UUID grantAwardId) {
-    // TODO: Verify user has access to this grant
-    return ResponseEntity.ok(ApiResponse.ok(reportService.getByGrantAwardId(grantAwardId)));
-  }
-
-  private Long resolveUserId(Principal principal) {
-    return userRepository
-        .findByEmail(principal.getName())
-        .map(UserEntity::getId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found"));
-  }
+    @GetMapping("/grant/{grantAwardId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<List<ReportResponse>>> getByGrant(
+            @PathVariable UUID grantAwardId, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(
+                ApiResponse.ok(reportService.getByGrantAwardId(grantAwardId, userId)));
+    }
 }

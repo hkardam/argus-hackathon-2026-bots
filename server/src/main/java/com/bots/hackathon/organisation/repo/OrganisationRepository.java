@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrganisationRepository extends JpaRepository<Organisation, UUID> {
 
-  Optional<Organisation> findByIdAndDeletedFalse(UUID id);
+    Optional<Organisation> findByIdAndDeletedFalse(UUID id);
 
-  List<Organisation> findByOwnerUserIdAndDeletedFalse(Long ownerUserId);
+    List<Organisation> findByOwnerUserIdAndDeletedFalse(Long ownerUserId);
 
-  Optional<Organisation> findByRegistrationNumber(String registrationNumber);
+    Optional<Organisation> findByRegistrationNumber(String registrationNumber);
 }

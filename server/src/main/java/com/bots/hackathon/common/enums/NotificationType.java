@@ -1,8 +1,8 @@
 package com.bots.hackathon.common.enums;
 
 public enum NotificationType {
-  INFO,
-  ACTION_REQUIRED,
-  DEADLINE,
-  SYSTEM
+    INFO,
+    ACTION_REQUIRED,
+    DEADLINE,
+    SYSTEM
 }

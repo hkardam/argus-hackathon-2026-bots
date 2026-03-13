@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ScreeningReportRepository extends JpaRepository<ScreeningReport, UUID> {
 
-  Optional<ScreeningReport> findByApplicationId(UUID applicationId);
+    Optional<ScreeningReport> findByApplicationId(UUID applicationId);
 }

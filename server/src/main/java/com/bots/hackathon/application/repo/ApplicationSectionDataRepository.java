@@ -7,10 +7,10 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ApplicationSectionDataRepository
-    extends JpaRepository<ApplicationSectionData, UUID> {
+        extends JpaRepository<ApplicationSectionData, UUID> {
 
-  List<ApplicationSectionData> findByApplicationId(UUID applicationId);
+    List<ApplicationSectionData> findByApplicationId(UUID applicationId);
 
-  Optional<ApplicationSectionData> findByApplicationIdAndSectionKey(
-      UUID applicationId, String sectionKey);
+    Optional<ApplicationSectionData> findByApplicationIdAndSectionKey(
+            UUID applicationId, String sectionKey);
 }

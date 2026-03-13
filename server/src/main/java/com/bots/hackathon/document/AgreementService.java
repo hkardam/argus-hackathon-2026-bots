@@ -10,15 +10,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AgreementService {
 
-  // TODO: Inject TemplateRenderer and PdfGenerator when implemented
-
-  /**
-   * Generates a grant agreement document for the given award. TODO: Implement template rendering
-   * and PDF generation.
-   */
-  public byte[] generateAgreement(UUID grantAwardId) {
-    log.info("Agreement generation requested for grant award: {}", grantAwardId);
-    // TODO: Fetch award details, render template, generate PDF
-    throw new UnsupportedOperationException("Agreement generation not yet implemented");
-  }
+    /**
+     * Generates a grant agreement document for the given award. Requires TemplateRenderer and
+     * PdfGenerator implementations to be wired.
+     */
+    public byte[] generateAgreement(UUID grantAwardId) {
+        log.info("Agreement generation requested for grant award: {}", grantAwardId);
+        throw new UnsupportedOperationException("Agreement generation not yet implemented");
+    }
 }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReportRepository extends JpaRepository<Report, UUID> {
 
-  Optional<Report> findByIdAndDeletedFalse(UUID id);
+    Optional<Report> findByIdAndDeletedFalse(UUID id);
 
-  List<Report> findByGrantAwardIdAndDeletedFalse(UUID grantAwardId);
+    List<Report> findByGrantAwardIdAndDeletedFalse(UUID grantAwardId);
 }

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RiskFlagRepository extends JpaRepository<RiskFlag, UUID> {
 
-  List<RiskFlag> findByApplicationId(UUID applicationId);
+    List<RiskFlag> findByApplicationId(UUID applicationId);
 
-  List<RiskFlag> findByApplicationIdAndIsResolvedFalse(UUID applicationId);
+    List<RiskFlag> findByApplicationIdAndIsResolvedFalse(UUID applicationId);
 }

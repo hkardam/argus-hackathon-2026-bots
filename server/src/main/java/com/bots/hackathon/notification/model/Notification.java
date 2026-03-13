@@ -16,37 +16,37 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor
 public class Notification {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "recipient_user_id", nullable = false)
-  private Long recipientUserId;
+    @Column(name = "recipient_user_id", nullable = false)
+    private Long recipientUserId;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private NotificationType type;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private NotificationType type;
 
-  @Column(nullable = false)
-  private String title;
+    @Column(nullable = false)
+    private String title;
 
-  @Column(columnDefinition = "TEXT")
-  private String message;
+    @Column(columnDefinition = "TEXT")
+    private String message;
 
-  @Column(name = "reference_type")
-  private String referenceType;
+    @Column(name = "reference_type")
+    private String referenceType;
 
-  @Column(name = "reference_id")
-  private String referenceId;
+    @Column(name = "reference_id")
+    private String referenceId;
 
-  @Column(name = "is_read")
-  @Builder.Default
-  private Boolean isRead = false;
+    @Column(name = "is_read")
+    @Builder.Default
+    private Boolean isRead = false;
 
-  @Column(name = "read_at")
-  private LocalDateTime readAt;
+    @Column(name = "read_at")
+    private LocalDateTime readAt;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }

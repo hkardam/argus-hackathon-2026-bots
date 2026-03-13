@@ -20,46 +20,46 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 public class GrantProgramme {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(nullable = false)
-  private String name;
+    @Column(nullable = false)
+    private String name;
 
-  @Column(columnDefinition = "TEXT")
-  private String description;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "grant_type", nullable = false)
-  private GrantType grantType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "grant_type", nullable = false)
+    private GrantType grantType;
 
-  @Column(name = "total_budget", precision = 19, scale = 2)
-  private BigDecimal totalBudget;
+    @Column(name = "total_budget", precision = 19, scale = 2)
+    private BigDecimal totalBudget;
 
-  @Column(name = "max_award_amount", precision = 19, scale = 2)
-  private BigDecimal maxAwardAmount;
+    @Column(name = "max_award_amount", precision = 19, scale = 2)
+    private BigDecimal maxAwardAmount;
 
-  @Column(name = "application_open_date")
-  private LocalDate applicationOpenDate;
+    @Column(name = "application_open_date")
+    private LocalDate applicationOpenDate;
 
-  @Column(name = "application_close_date")
-  private LocalDate applicationCloseDate;
+    @Column(name = "application_close_date")
+    private LocalDate applicationCloseDate;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "current_stage")
-  @Builder.Default
-  private WorkflowStage currentStage = WorkflowStage.SUBMISSION;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "current_stage")
+    @Builder.Default
+    private WorkflowStage currentStage = WorkflowStage.SUBMISSION;
 
-  @Column(name = "is_active")
-  @Builder.Default
-  private Boolean isActive = true;
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = true;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

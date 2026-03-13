@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MessageThreadRepository extends JpaRepository<MessageThread, UUID> {
 
-  List<MessageThread> findByApplicationId(UUID applicationId);
+    List<MessageThread> findByApplicationId(UUID applicationId);
 
-  List<MessageThread> findByCreatedByUserId(Long createdByUserId);
+    List<MessageThread> findByCreatedByUserId(Long createdByUserId);
 }

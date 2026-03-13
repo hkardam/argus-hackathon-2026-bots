@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
-  List<Review> findByApplicationId(UUID applicationId);
+    List<Review> findByApplicationId(UUID applicationId);
 
-  Optional<Review> findByApplicationIdAndReviewerUserId(UUID applicationId, Long reviewerUserId);
+    Optional<Review> findByApplicationIdAndReviewerUserId(UUID applicationId, Long reviewerUserId);
 }

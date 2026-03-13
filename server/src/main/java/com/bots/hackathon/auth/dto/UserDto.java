@@ -4,9 +4,9 @@ import com.bots.hackathon.auth.model.Role;
 import java.time.LocalDateTime;
 
 public record UserDto(
-    Long id,
-    String name,
-    String email,
-    String oauth2ProviderId,
-    Role role,
-    LocalDateTime createdAt) {}
+        Long id,
+        String name,
+        String email,
+        String oauth2ProviderId,
+        Role role,
+        LocalDateTime createdAt) {}

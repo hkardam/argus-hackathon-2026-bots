@@ -15,40 +15,40 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class RoleBasedFieldMaskingFilter extends SimpleBeanPropertyFilter {
 
-  @Override
-  public void serializeAsField(
-      Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
-      throws Exception {
-    if (include(writer)) {
-      MaskIfRole maskAnnotation = writer.getAnnotation(MaskIfRole.class);
-      if (maskAnnotation != null) {
-        String currentRole = getCurrentRole();
-        String[] restrictedRoles = maskAnnotation.restrictedRoles().split(",");
-        boolean isRestricted =
-            Arrays.stream(restrictedRoles)
-                .map(String::trim)
-                .anyMatch(role -> role.equalsIgnoreCase(currentRole));
+    @Override
+    public void serializeAsField(
+            Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
+            throws Exception {
+        if (include(writer)) {
+            MaskIfRole maskAnnotation = writer.getAnnotation(MaskIfRole.class);
+            if (maskAnnotation != null) {
+                String currentRole = getCurrentRole();
+                String[] restrictedRoles = maskAnnotation.restrictedRoles().split(",");
+                boolean isRestricted =
+                        Arrays.stream(restrictedRoles)
+                                .map(String::trim)
+                                .anyMatch(role -> role.equalsIgnoreCase(currentRole));
 
-        if (isRestricted) {
-          // Skip serializing this field entirely
-          return;
+                if (isRestricted) {
+                    // Skip serializing this field entirely
+                    return;
+                }
+            }
+            writer.serializeAsField(pojo, jgen, provider);
+        } else if (!jgen.canOmitFields()) {
+            writer.serializeAsOmittedField(pojo, jgen, provider);
         }
-      }
-      writer.serializeAsField(pojo, jgen, provider);
-    } else if (!jgen.canOmitFields()) {
-      writer.serializeAsOmittedField(pojo, jgen, provider);
     }
-  }
 
-  private String getCurrentRole() {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (auth != null && auth.isAuthenticated()) {
-      for (GrantedAuthority authority : auth.getAuthorities()) {
-        if (authority.getAuthority().startsWith("ROLE_")) {
-          return authority.getAuthority().substring(5);
+    private String getCurrentRole() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            for (GrantedAuthority authority : auth.getAuthorities()) {
+                if (authority.getAuthority().startsWith("ROLE_")) {
+                    return authority.getAuthority().substring(5);
+                }
+            }
         }
-      }
+        return "UNKNOWN";
     }
-    return "UNKNOWN";
-  }
 }

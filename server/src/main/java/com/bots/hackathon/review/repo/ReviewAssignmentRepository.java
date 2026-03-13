@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewAssignmentRepository extends JpaRepository<ReviewAssignment, UUID> {
 
-  List<ReviewAssignment> findByReviewerUserId(Long reviewerUserId);
+    List<ReviewAssignment> findByReviewerUserId(Long reviewerUserId);
 
-  List<ReviewAssignment> findByApplicationId(UUID applicationId);
+    List<ReviewAssignment> findByApplicationId(UUID applicationId);
 
-  List<ReviewAssignment> findByReviewerUserIdAndIsCompletedFalse(Long reviewerUserId);
+    List<ReviewAssignment> findByReviewerUserIdAndIsCompletedFalse(Long reviewerUserId);
+
+    boolean existsByApplicationIdAndReviewerUserId(UUID applicationId, Long reviewerUserId);
 }

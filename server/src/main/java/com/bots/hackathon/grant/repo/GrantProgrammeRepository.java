@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GrantProgrammeRepository extends JpaRepository<GrantProgramme, UUID> {
 
-  List<GrantProgramme> findByIsActiveTrue();
+    List<GrantProgramme> findByIsActiveTrue();
 
-  List<GrantProgramme> findByGrantType(GrantType grantType);
+    List<GrantProgramme> findByGrantType(GrantType grantType);
 }

@@ -26,29 +26,29 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor(access = AccessLevel.PRIVATE) // Builder uses this
 public class AuditLogEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(name = "actor_id", updatable = false)
-  private Long actorId;
+    @Column(name = "actor_id", updatable = false)
+    private Long actorId;
 
-  @Column(name = "role", updatable = false)
-  private String role;
+    @Column(name = "role", updatable = false)
+    private String role;
 
-  @Column(name = "action_type", nullable = false, updatable = false)
-  private String actionType;
+    @Column(name = "action_type", nullable = false, updatable = false)
+    private String actionType;
 
-  @Column(name = "object_type", updatable = false)
-  private String objectType;
+    @Column(name = "object_type", updatable = false)
+    private String objectType;
 
-  @Column(name = "object_id", updatable = false)
-  private String objectId;
+    @Column(name = "object_id", updatable = false)
+    private String objectId;
 
-  @CreationTimestamp
-  @Column(name = "timestamp", nullable = false, updatable = false)
-  private LocalDateTime timestamp;
+    @CreationTimestamp
+    @Column(name = "timestamp", nullable = false, updatable = false)
+    private LocalDateTime timestamp;
 
-  @Column(name = "metadata_json", columnDefinition = "TEXT", updatable = false)
-  private String metadataJson;
+    @Column(name = "metadata_json", columnDefinition = "TEXT", updatable = false)
+    private String metadataJson;
 }

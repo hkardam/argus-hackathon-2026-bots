@@ -9,11 +9,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LoggableAction {
-  String actionType();
+    String actionType();
 
-  String objectType() default "SYSTEM";
+    String objectType() default "SYSTEM";
 
-  // SpEL expressing evaluating arguments to determine the Object ID.
-  // Examples: "#id", "#dto.applicationId"
-  String objectIdExpression() default "";
+    // SpEL expressing evaluating arguments to determine the Object ID.
+    // Examples: "#id", "#dto.applicationId"
+    String objectIdExpression() default "";
 }

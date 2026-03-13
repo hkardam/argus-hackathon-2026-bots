@@ -5,5 +5,5 @@ import java.util.List;
 
 public record ScreeningAiResponse(RiskLevel overallRiskLevel, List<Flag> flags, String summary) {
 
-  public record Flag(String type, String description, RiskLevel severity) {}
+    public record Flag(String type, String description, RiskLevel severity) {}
 }

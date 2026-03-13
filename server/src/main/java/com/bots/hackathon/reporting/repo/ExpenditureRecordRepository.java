@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExpenditureRecordRepository extends JpaRepository<ExpenditureRecord, UUID> {
 
-  List<ExpenditureRecord> findByGrantAwardId(UUID grantAwardId);
+    List<ExpenditureRecord> findByGrantAwardId(UUID grantAwardId);
 }

@@ -4,9 +4,9 @@ import com.bots.hackathon.application.dto.ApplicationResponse;
 import com.bots.hackathon.application.dto.CreateApplicationRequest;
 import com.bots.hackathon.application.dto.UpdateSectionRequest;
 import com.bots.hackathon.application.service.ApplicationService;
-import com.bots.hackathon.auth.model.UserEntity;
-import com.bots.hackathon.auth.repo.UserRepository;
+import com.bots.hackathon.auth.service.AuthService;
 import com.bots.hackathon.common.dto.ApiResponse;
+import com.bots.hackathon.common.enums.ApplicationStatus;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -22,59 +22,84 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ApplicationController {
 
-  private final ApplicationService applicationService;
-  private final UserRepository userRepository;
+    private final ApplicationService applicationService;
+    private final AuthService authService;
 
-  @PostMapping
-  @PreAuthorize("hasRole('APPLICANT')")
-  public ResponseEntity<ApiResponse<ApplicationResponse>> createDraft(
-      @Valid @RequestBody CreateApplicationRequest request, Principal principal) {
-    Long userId = resolveUserId(principal);
-    ApplicationResponse response = applicationService.createDraft(request, userId);
-    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
-  }
+    @PostMapping
+    @PreAuthorize("hasRole('APPLICANT')")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> createDraft(
+            @Valid @RequestBody CreateApplicationRequest request, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        ApplicationResponse response = applicationService.createDraft(request, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
+    }
 
-  @PutMapping("/{id}/sections")
-  @PreAuthorize("hasRole('APPLICANT')")
-  public ResponseEntity<ApiResponse<Void>> updateSection(
-      @PathVariable UUID id, @Valid @RequestBody UpdateSectionRequest request) {
-    // TODO: Verify current user owns this application
-    applicationService.updateSection(id, request);
-    return ResponseEntity.ok(ApiResponse.ok(null));
-  }
+    @PutMapping("/{id}/sections")
+    @PreAuthorize("hasRole('APPLICANT')")
+    public ResponseEntity<ApiResponse<Void>> updateSection(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateSectionRequest request,
+            Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        applicationService.updateSection(id, request, userId);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
 
-  @PostMapping("/{id}/submit")
-  @PreAuthorize("hasRole('APPLICANT')")
-  public ResponseEntity<ApiResponse<ApplicationResponse>> submit(@PathVariable UUID id) {
-    // TODO: Verify current user owns this application
-    return ResponseEntity.ok(ApiResponse.ok(applicationService.submit(id)));
-  }
+    @PostMapping("/{id}/submit")
+    @PreAuthorize("hasRole('APPLICANT')")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> submit(
+            @PathVariable UUID id, Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.submit(id, userId)));
+    }
 
-  @GetMapping("/{id}")
-  @PreAuthorize("@securityGuard.canAccessApplication(#id)")
-  public ResponseEntity<ApiResponse<ApplicationResponse>> getById(@PathVariable UUID id) {
-    return ResponseEntity.ok(ApiResponse.ok(applicationService.getById(id)));
-  }
+    @GetMapping("/{id}")
+    @PreAuthorize("@securityGuard.canAccessApplication(#id)")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.getById(id)));
+    }
 
-  @GetMapping("/me")
-  @PreAuthorize("hasRole('APPLICANT')")
-  public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listMyApplications(
-      Principal principal) {
-    Long userId = resolveUserId(principal);
-    return ResponseEntity.ok(ApiResponse.ok(applicationService.listByApplicant(userId)));
-  }
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('APPLICANT')")
+    public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listMyApplications(
+            Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.listByApplicant(userId)));
+    }
 
-  @GetMapping("/programme/{programmeId}")
-  @PreAuthorize("@securityGuard.isStaff()")
-  public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listByProgramme(
-      @PathVariable UUID programmeId) {
-    return ResponseEntity.ok(ApiResponse.ok(applicationService.listByProgramme(programmeId)));
-  }
+    @GetMapping("/programme/{programmeId}")
+    @PreAuthorize("@securityGuard.isStaff()")
+    public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listByProgramme(
+            @PathVariable UUID programmeId) {
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.listByProgramme(programmeId)));
+    }
 
-  private Long resolveUserId(Principal principal) {
-    return userRepository
-        .findByEmail(principal.getName())
-        .map(UserEntity::getId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found"));
-  }
+    @GetMapping
+    @PreAuthorize("hasRole('PROGRAM_OFFICER')")
+    public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listAll() {
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.listAllActive()));
+    }
+
+    @GetMapping("/assigned")
+    @PreAuthorize("hasRole('REVIEWER')")
+    public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listAssigned(
+            Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.listAssignedToReviewer(userId)));
+    }
+
+    @PatchMapping("/{id}/screening")
+    @PreAuthorize("hasRole('PROGRAM_OFFICER')")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> updateScreening(
+            @PathVariable UUID id, @RequestParam ApplicationStatus status) {
+        return ResponseEntity.ok(
+                ApiResponse.ok(applicationService.updateScreeningStatus(id, status)));
+    }
+
+    @PatchMapping("/{id}/decision")
+    @PreAuthorize("hasRole('PROGRAM_OFFICER')")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> updateDecision(
+            @PathVariable UUID id, @RequestParam ApplicationStatus status) {
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.updateDecision(id, status)));
+    }
 }

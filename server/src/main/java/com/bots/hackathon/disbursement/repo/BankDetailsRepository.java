@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BankDetailsRepository extends JpaRepository<BankDetails, UUID> {
 
-  Optional<BankDetails> findByOrganisationId(UUID organisationId);
+    Optional<BankDetails> findByOrganisationId(UUID organisationId);
 }

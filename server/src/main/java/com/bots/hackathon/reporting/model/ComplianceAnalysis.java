@@ -16,32 +16,32 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor
 public class ComplianceAnalysis {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "grant_award_id", nullable = false)
-  private UUID grantAwardId;
+    @Column(name = "grant_award_id", nullable = false)
+    private UUID grantAwardId;
 
-  @Column(name = "report_id")
-  private UUID reportId;
+    @Column(name = "report_id")
+    private UUID reportId;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  @Builder.Default
-  private ComplianceStatus status = ComplianceStatus.UNDER_REVIEW;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private ComplianceStatus status = ComplianceStatus.UNDER_REVIEW;
 
-  @Column(name = "findings", columnDefinition = "TEXT")
-  private String findings;
+    @Column(name = "findings", columnDefinition = "TEXT")
+    private String findings;
 
-  @Column(name = "ai_suggested")
-  @Builder.Default
-  private Boolean aiSuggested = false;
+    @Column(name = "ai_suggested")
+    @Builder.Default
+    private Boolean aiSuggested = false;
 
-  @Column(name = "reviewed_by_user_id")
-  private Long reviewedByUserId;
+    @Column(name = "reviewed_by_user_id")
+    private Long reviewedByUserId;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }

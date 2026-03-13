@@ -16,28 +16,28 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 public class ApplicationSectionData {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "application_id", nullable = false)
-  private UUID applicationId;
+    @Column(name = "application_id", nullable = false)
+    private UUID applicationId;
 
-  @Column(name = "section_key", nullable = false)
-  private String sectionKey;
+    @Column(name = "section_key", nullable = false)
+    private String sectionKey;
 
-  @Column(name = "section_data", columnDefinition = "TEXT", nullable = false)
-  private String sectionData;
+    @Column(name = "section_data", columnDefinition = "TEXT", nullable = false)
+    private String sectionData;
 
-  @Column(name = "is_complete")
-  @Builder.Default
-  private Boolean isComplete = false;
+    @Column(name = "is_complete")
+    @Builder.Default
+    private Boolean isComplete = false;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
