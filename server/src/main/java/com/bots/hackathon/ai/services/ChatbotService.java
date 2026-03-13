@@ -10,10 +10,9 @@ import com.bots.hackathon.ai.model.ChatbotMessage;
 import com.bots.hackathon.ai.repo.AITaskConfigRepo;
 import com.bots.hackathon.ai.repo.ChatbotTextRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

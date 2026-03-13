@@ -1,15 +1,14 @@
 package com.bots.hackathon.ai.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-    @Table(name = "chat_bot_message")
+@Table(name = "chat_bot_message")
 public class ChatbotMessage {
 
     @Id
