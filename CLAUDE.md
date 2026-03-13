@@ -7,16 +7,6 @@
 
 ---
 
-## 🎯 Quick Start for Claude Code
-
-When you ask Claude Code for help during the hackathon, it will:
-
-1. Use this guide to understand your project setup
-2. Reference the 14 custom skills we've created
-3. Follow team-optimized workflows
-4. Help you move fast without breaking things
-
----
 
 ## 📋 Project Structure
 
@@ -25,20 +15,36 @@ argus-hackathon-2026-bots/
 ├── client/                 # React + TypeScript (Vite)
 │   ├── src/
 │   ├── package.json
-│   └── Dockerfile         # Dev & prod targets
+│   ├── Dockerfile         # Dev & prod targets
+│   └── frontend-rule.md   # Formatting rules
 ├── server/                 # Spring Boot 3 (Java 21)
 │   ├── src/
 │   ├── pom.xml
 │   └── Dockerfile         # Dev & prod targets
 ├── docker-compose.yml      # Full stack setup
-├── .agents/skills/         # Custom skills
-├── frontend-rules.md       # React architecture & patterns guide
+├── .agents/
+│   ├── rules/             # Quality & architectural rules
+│   └── skills/            # Custom skills
 └── CLAUDE.md              # This file
 
 **Ports:**
 - Client (Vite): http://localhost:5173
 - Server (Spring Boot): http://localhost:8086
 ```
+
+---
+
+## 📜 Development Rules (MANDATORY)
+
+Strictly follow these rules for every task. They define our architectural standards and automated workflows.
+
+### Backend Rules (server/)
+- **Architecture & Patterns**: [.agents/rules/backend-rule.md](.agents/rules/backend-rule.md) - Recursive modular structure, DTO/Entity isolation, Java 21 records.
+- **Code Quality & Formatting**: [.agents/rules/backend-quality.rule.md](.agents/rules/backend-quality.rule.md) - No manual formatting; use `./mvnw spotless:apply`.
+
+### Frontend Rules (client/)
+- **Architecture & Quality**: [.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md) - Feature-based structure, pure components, TanStack Query for state.
+- **Formatting**: [client/frontend-rule.md](client/frontend-rule.md) - No manual formatting; use `npm run format`.
 
 ---
 
@@ -53,7 +59,6 @@ When you receive the problem statement:
 3. **Divide work** by frontend, backend, integration
 4. **Assign tasks** to team members
 
-**Claude Code help:** Ask to break down requirements or sketch architecture
 
 ### Phase 2: Planning & Setup (30-45 min)
 
@@ -62,7 +67,6 @@ When you receive the problem statement:
 3. **Create git branches** for isolated work
 4. **Use `using-git-worktrees` skill**: Each person works in isolated worktree
 
-**Claude Code help:** "Create a plan for [feature]" or "Help divide this into 4 parallel tasks"
 
 ### Phase 3: Implementation (5 hours)
 
@@ -75,11 +79,8 @@ When you receive the problem statement:
 
 **Code Review (lightweight, continuous):**
 
-- Every 30-45 min: **Use `requesting-code-review` skill** - Ask Claude to review your code
-- Claude will spot bugs, suggest improvements, verify against requirements
-
-**Claude Code help:** "Implement [feature from plan]" or "Why is this test failing?"
-
+- Every 30-45 min: **Use `requesting-code-review` skill** - Ask for a review
+- The agent will spot bugs, suggest improvements, verify against requirements
 ### Phase 4: Integration & Polish (45 min)
 
 1. **Merge branches** from all 4 team members
@@ -87,7 +88,6 @@ When you receive the problem statement:
 3. **Use `verification-before-completion` skill**: Verify entire app works end-to-end
 4. **Quick bug fixes** (use `systematic-debugging`)
 
-**Claude Code help:** "Test the full app" or "Fix this integration bug"
 
 ---
 
@@ -166,11 +166,11 @@ When you receive the problem statement:
 | "API returns 'userName', frontend expects 'name'" | Naming mismatch | Agree on field names NOW |
 | "API response is missing field X" | Incomplete contract | Add to contract, backend implements |
 
-**Use Claude Code:**
+**Use Agent:**
 
 ```
 "Create API contract for [feature]"
-→ Claude generates interface + endpoints
+→ Agent generates interface + endpoints
 → You copy to both frontend & backend
 ```
 
@@ -218,7 +218,7 @@ Is it FUNCTIONAL BUG? (App runs, feature doesn't work right)
   │
   └─ NO → Not sure what's wrong?
            Ask: "Why isn't [feature] working?"
-           → Claude Code helps diagnose
+           → Agent helps diagnose
 ```
 
 **Functional Bug Debugging Checklist:**
@@ -266,12 +266,12 @@ Is it FUNCTIONAL BUG? (App runs, feature doesn't work right)
    Test: Call API from frontend, console.log the response
    ```
 
-**Ask Claude Code if stuck:**
+**Ask for help if stuck:**
 
 ```
 "[What you tried] isn't working. Error: [error message]"
 
-Claude will:
+The agent will:
 - Spot the bug you missed
 - Suggest fix
 - Verify it works
@@ -281,7 +281,7 @@ Claude will:
 
 - ⏱ 0-5 min: Self-debug
 - ⏱ 5-10 min: Ask teammate
-- ⏱ 10-15 min: Ask Claude Code
+- ⏱ 10-15 min: Ask Agent
 - ⏱ 15+ min: ESCALATE (skip this bug, finish other features first)
 
 ---
@@ -341,7 +341,7 @@ Documentation:
    Assign: 1 teammate
    Time: 5-15 min review
 
-   Use Claude Code:
+   Use Agent:
    "Review my [component/endpoint] for bugs"
    → Gets instant feedback
    ```
@@ -567,7 +567,7 @@ claude --worktree my-feature
 
 # When ready to merge
 git push origin my-feature
-gh pr create                    # Create PR with Claude's help
+gh pr create                    # Create PR
 # Request review from teammates
 # Merge when approved
 ```
@@ -590,7 +590,7 @@ gh pr create                    # Create PR with Claude's help
 
 ### For Hackathon (15 min reviews, not perfection)
 
-**Reviewer (Claude or teammate) checks:**
+**Reviewer checks:**
 
 1. ✅ Code works (passes tests)
 2. ✅ No obvious bugs
@@ -674,7 +674,7 @@ cd server && mvn clean package
 3. **Divide wisely:** Person 4 should finish first (less dependencies)
 4. **Code review fast:** 5-15 min reviews catch 80% of bugs
 5. **Don't over-engineer:** Good enough > perfect (it's hackathon)
-6. **Use Claude Code:** For code review + debugging (saves hours)
+6. **Use Agent:** For code review + debugging (saves hours)
 7. **Commit small:** Easy to revert if something breaks
 
 ---
@@ -682,7 +682,7 @@ cd server && mvn clean package
 ## 📚 Essential Skills Reference (18 Total)
 
 **All custom skills are in** `.agents/skills/`
-**Frontend documentation:** [frontend-rules.md](frontend-rules.md)
+**Development Rules:** [.agents/rules/](.agents/rules/)
 
 **CORE (Use Every Task):**
 
@@ -714,7 +714,7 @@ cd server && mvn clean package
 
 **FRONTEND-SPECIFIC:**
 
-- 📖 **[frontend-rules.md](frontend-rules.md)** - Comprehensive React architecture, patterns, and best practices
+- 📖 **[.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md)** - Comprehensive React architecture, patterns, and best practices
 - `react-component-development` - Pure component patterns, props design, state in components
 - `react-state-management` - Decision tree for useState vs React Query vs Zustand
 - `react-api-integration` - API contracts, client setup, React Query patterns
@@ -738,16 +738,16 @@ Before submitting, verify:
 
 ## 🔗 Getting Help
 
-When stuck, ask Claude Code:
+When stuck, ask for help:
 
 ```
 "[Problem]: [Error/Issue]"
-→ Claude suggests solution + references relevant skill
+→ Agent suggests solution + references relevant skill
 
 Example:
 "Test failing: API returns 404 but should return 200"
-→ Claude asks clarifying questions
-→ Claude suggests fix
+→ Agent asks clarifying questions
+→ Agent suggests fix
 → You implement + verify
 ```
 
@@ -764,7 +764,7 @@ For **8-hour sprint with 4 people:**
 | **Backend Lead**    | Person 3 | Controllers, routing, APIs         | (See backend skills)                              |
 | **Data/Logic**      | Person 4 | Services, business logic, database | (See backend skills)                              |
 
-**Frontend Start:** Person 1 & 2 should read [frontend-rules.md](frontend-rules.md) and use `frontend-workflow` skill to guide implementation.
+**Frontend Start:** Person 1 & 2 should read [.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md) and use `frontend-workflow` skill to guide implementation.
 
 **Transition:** At T+5h, all shift to integration + bug fixes (everyone helps)
 
@@ -778,7 +778,3 @@ This is a **hackathon**, not production. Optimize for:
 2. **Teamwork** (divide work, no bottlenecks)
 3. **Quality** (test + verify, catch bugs early)
 4. **Fun** (go along with the vibe!)
-
-Use Claude Code as your **5th team member** for code review, debugging, and planning.
-
-**Good luck! 🚀**
