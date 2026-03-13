@@ -59,7 +59,11 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     // Restrict to known domains per requirement
     configuration.setAllowedOrigins(
-        Arrays.asList("http://localhost:3000", "http://localhost:5173", "http://localhost:8080"));
+        Arrays.asList(
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://localhost:8080",
+            "http://localhost:5174"));
     configuration.setAllowedMethods(
         Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));

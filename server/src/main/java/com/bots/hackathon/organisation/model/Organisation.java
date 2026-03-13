@@ -1,6 +1,7 @@
 package com.bots.hackathon.organisation.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.*;
@@ -26,6 +27,19 @@ public class Organisation {
   @Column(name = "registration_number", unique = true)
   private String registrationNumber;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "organisation_type")
+  private OrganisationType organisationType;
+
+  @Column(name = "year_established")
+  private Integer yearEstablished;
+
+  @Column(name = "state")
+  private String state;
+
+  @Column(name = "contact_person")
+  private String contactPerson;
+
   @Column(columnDefinition = "TEXT")
   private String address;
 
@@ -34,6 +48,9 @@ public class Organisation {
 
   @Column(name = "contact_phone")
   private String contactPhone;
+
+  @Column(name = "annual_budget", precision = 19, scale = 2)
+  private BigDecimal annualBudget;
 
   @Column(name = "owner_user_id", nullable = false)
   private Long ownerUserId;

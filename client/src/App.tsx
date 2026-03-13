@@ -15,6 +15,7 @@ import ApplicantDashboard from './features/applicant-dashboard/components/Applic
 import LoginPage from './features/auth/components/LoginPage';
 import SignupPage from './features/auth/components/SignupPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import OrganisationProfilePage from './features/organisation-profile/components/OrganisationProfilePage';
 
 const GRANTS = [
   {
@@ -78,6 +79,7 @@ export default function App() {
             </ProtectedRoute>
           }>
             <Route index element={<ApplicantDashboard />} />
+            <Route path="profile" element={<OrganisationProfilePage />} />
           </Route>
         </Routes>
       </div>

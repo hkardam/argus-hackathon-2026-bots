@@ -42,4 +42,10 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
     return ResponseEntity.badRequest().body(ApiResponse.error(ex.getMessage()));
   }
+
+  @ExceptionHandler(DuplicateRegistrationException.class)
+  public ResponseEntity<ApiResponse<Void>> handleDuplicateRegistration(
+      DuplicateRegistrationException ex) {
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(ex.getMessage()));
+  }
 }
