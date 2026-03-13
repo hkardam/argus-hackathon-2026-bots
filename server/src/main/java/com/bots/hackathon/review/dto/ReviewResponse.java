@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ReviewResponse(
-    UUID id,
-    UUID applicationId,
-    Long reviewerUserId,
-    UUID assignmentId,
-    Integer score,
-    ReviewOutcome outcome,
-    String comments,
-    Boolean aiSuggested,
-    LocalDateTime createdAt) {}
+        UUID id,
+        UUID applicationId,
+        Long reviewerUserId,
+        UUID assignmentId,
+        Integer score,
+        ReviewOutcome outcome,
+        String comments,
+        Boolean aiSuggested,
+        LocalDateTime createdAt) {}

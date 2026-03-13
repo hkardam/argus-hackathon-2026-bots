@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StubScreeningReportGenerator implements ScreeningReportGenerator {
 
-  @Override
-  public ScreeningAiResponse generateScreeningReport(ScreeningAiRequest request) {
-    log.info("AI Screening report stub called for application: {}", request.applicationId());
-    // TODO: Replace with actual AI integration
-    return new ScreeningAiResponse(RiskLevel.LOW, List.of(), "AI Suggested: Stub response");
-  }
+    @Override
+    public ScreeningAiResponse generateScreeningReport(ScreeningAiRequest request) {
+        log.info("AI Screening report stub called for application: {}", request.applicationId());
+        // TODO: Replace with actual AI integration
+        return new ScreeningAiResponse(RiskLevel.LOW, List.of(), "AI Suggested: Stub response");
+    }
 }

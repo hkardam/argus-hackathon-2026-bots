@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EligibilityCheckResultRepository
-    extends JpaRepository<EligibilityCheckResult, UUID> {
+        extends JpaRepository<EligibilityCheckResult, UUID> {
 
-  Optional<EligibilityCheckResult> findByApplicationId(UUID applicationId);
+    Optional<EligibilityCheckResult> findByApplicationId(UUID applicationId);
 }

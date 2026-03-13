@@ -9,25 +9,27 @@ import org.junit.jupiter.api.Test;
 
 class AuthorizationGuardTest {
 
-  private AuthorizationGuard guard;
+    private AuthorizationGuard guard;
 
-  @BeforeEach
-  void setUp() {
-    guard = new AuthorizationGuard();
-  }
+    @BeforeEach
+    void setUp() {
+        guard = new AuthorizationGuard();
+    }
 
-  @Test
-  void testConflictOfInterestCheck() {
-    // Different domains -> Pass
-    assertTrue(
-        guard.passesConflictOfInterestCheck("reviewer@university.edu", "applicant@startup.com"));
+    @Test
+    void testConflictOfInterestCheck() {
+        // Different domains -> Pass
+        assertTrue(
+                guard.passesConflictOfInterestCheck(
+                        "reviewer@university.edu", "applicant@startup.com"));
 
-    // Same domain -> Fail
-    assertFalse(
-        guard.passesConflictOfInterestCheck("reviewer@company.com", "applicant@company.com"));
+        // Same domain -> Fail
+        assertFalse(
+                guard.passesConflictOfInterestCheck(
+                        "reviewer@company.com", "applicant@company.com"));
 
-    // Null checks -> Fail securely
-    assertFalse(guard.passesConflictOfInterestCheck(null, "applicant@company.com"));
-    assertFalse(guard.passesConflictOfInterestCheck("reviewer@company.com", null));
-  }
+        // Null checks -> Fail securely
+        assertFalse(guard.passesConflictOfInterestCheck(null, "applicant@company.com"));
+        assertFalse(guard.passesConflictOfInterestCheck("reviewer@company.com", null));
+    }
 }

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DocumentRepository extends JpaRepository<Document, UUID> {
 
-  List<Document> findByApplicationIdAndDeletedFalse(UUID applicationId);
+    List<Document> findByApplicationIdAndDeletedFalse(UUID applicationId);
 }

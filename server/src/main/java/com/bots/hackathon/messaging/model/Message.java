@@ -15,20 +15,20 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor
 public class Message {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "thread_id", nullable = false)
-  private UUID threadId;
+    @Column(name = "thread_id", nullable = false)
+    private UUID threadId;
 
-  @Column(name = "sender_user_id", nullable = false)
-  private Long senderUserId;
+    @Column(name = "sender_user_id", nullable = false)
+    private Long senderUserId;
 
-  @Column(name = "content", columnDefinition = "TEXT", nullable = false)
-  private String content;
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
+    private String content;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }

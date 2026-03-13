@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ComplianceAnalysisRepository extends JpaRepository<ComplianceAnalysis, UUID> {
 
-  List<ComplianceAnalysis> findByGrantAwardId(UUID grantAwardId);
+    List<ComplianceAnalysis> findByGrantAwardId(UUID grantAwardId);
 }

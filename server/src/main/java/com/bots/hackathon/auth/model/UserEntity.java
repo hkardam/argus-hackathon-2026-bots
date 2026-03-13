@@ -21,27 +21,27 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "users")
 public class UserEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false)
-  private String name;
+    @Column(nullable = false)
+    private String name;
 
-  @Column(nullable = false, unique = true)
-  private String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-  @Column(name = "oauth2_provider_id")
-  private String oauth2ProviderId;
+    @Column(name = "oauth2_provider_id")
+    private String oauth2ProviderId;
 
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private Role role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-  @Column(name = "password_hash")
-  private String passwordHash;
+    @Column(name = "password_hash")
+    private String passwordHash;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }

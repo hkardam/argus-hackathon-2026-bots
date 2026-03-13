@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DisbursementTrancheRepository extends JpaRepository<DisbursementTranche, UUID> {
 
-  List<DisbursementTranche> findByGrantAwardId(UUID grantAwardId);
+    List<DisbursementTranche> findByGrantAwardId(UUID grantAwardId);
 }

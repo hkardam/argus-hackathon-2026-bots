@@ -18,49 +18,49 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReportService {
 
-  private final ReportRepository reportRepository;
+    private final ReportRepository reportRepository;
 
-  @Transactional
-  @LoggableAction(actionType = "SUBMIT_REPORT", objectType = "REPORT")
-  public ReportResponse submitReport(SubmitReportRequest request, Long submittedByUserId) {
-    Report report =
-        Report.builder()
-            .grantAwardId(request.grantAwardId())
-            .submittedByUserId(submittedByUserId)
-            .reportType(request.reportType())
-            .content(request.content())
-            .status(ReportStatus.SUBMITTED)
-            .submittedAt(LocalDateTime.now())
-            .build();
-    return toResponse(reportRepository.save(report));
-  }
+    @Transactional
+    @LoggableAction(actionType = "SUBMIT_REPORT", objectType = "REPORT")
+    public ReportResponse submitReport(SubmitReportRequest request, Long submittedByUserId) {
+        Report report =
+                Report.builder()
+                        .grantAwardId(request.grantAwardId())
+                        .submittedByUserId(submittedByUserId)
+                        .reportType(request.reportType())
+                        .content(request.content())
+                        .status(ReportStatus.SUBMITTED)
+                        .submittedAt(LocalDateTime.now())
+                        .build();
+        return toResponse(reportRepository.save(report));
+    }
 
-  @Transactional(readOnly = true)
-  public ReportResponse getById(UUID id) {
-    Report report =
-        reportRepository
-            .findByIdAndDeletedFalse(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Report", id));
-    return toResponse(report);
-  }
+    @Transactional(readOnly = true)
+    public ReportResponse getById(UUID id) {
+        Report report =
+                reportRepository
+                        .findByIdAndDeletedFalse(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Report", id));
+        return toResponse(report);
+    }
 
-  @Transactional(readOnly = true)
-  public List<ReportResponse> getByGrantAwardId(UUID grantAwardId) {
-    return reportRepository.findByGrantAwardIdAndDeletedFalse(grantAwardId).stream()
-        .map(this::toResponse)
-        .toList();
-  }
+    @Transactional(readOnly = true)
+    public List<ReportResponse> getByGrantAwardId(UUID grantAwardId) {
+        return reportRepository.findByGrantAwardIdAndDeletedFalse(grantAwardId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
-  private ReportResponse toResponse(Report r) {
-    return new ReportResponse(
-        r.getId(),
-        r.getGrantAwardId(),
-        r.getSubmittedByUserId(),
-        r.getReportType(),
-        r.getContent(),
-        r.getStatus(),
-        r.getSubmittedAt(),
-        r.getCreatedAt(),
-        r.getUpdatedAt());
-  }
+    private ReportResponse toResponse(Report r) {
+        return new ReportResponse(
+                r.getId(),
+                r.getGrantAwardId(),
+                r.getSubmittedByUserId(),
+                r.getReportType(),
+                r.getContent(),
+                r.getStatus(),
+                r.getSubmittedAt(),
+                r.getCreatedAt(),
+                r.getUpdatedAt());
+    }
 }

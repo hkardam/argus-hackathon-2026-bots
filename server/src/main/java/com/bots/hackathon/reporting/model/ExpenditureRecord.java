@@ -19,41 +19,41 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 public class ExpenditureRecord {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "grant_award_id", nullable = false)
-  private UUID grantAwardId;
+    @Column(name = "grant_award_id", nullable = false)
+    private UUID grantAwardId;
 
-  @Column(nullable = false)
-  private String category;
+    @Column(nullable = false)
+    private String category;
 
-  @Column(columnDefinition = "TEXT")
-  private String description;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-  @Column(precision = 19, scale = 2, nullable = false)
-  private BigDecimal amount;
+    @Column(precision = 19, scale = 2, nullable = false)
+    private BigDecimal amount;
 
-  @Column(name = "expenditure_date", nullable = false)
-  private LocalDate expenditureDate;
+    @Column(name = "expenditure_date", nullable = false)
+    private LocalDate expenditureDate;
 
-  @Column(name = "receipt_document_id")
-  private UUID receiptDocumentId;
+    @Column(name = "receipt_document_id")
+    private UUID receiptDocumentId;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "verification_status", nullable = false)
-  @Builder.Default
-  private VerificationStatus verificationStatus = VerificationStatus.PENDING;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "verification_status", nullable = false)
+    @Builder.Default
+    private VerificationStatus verificationStatus = VerificationStatus.PENDING;
 
-  @Column(name = "verified_by_user_id")
-  private Long verifiedByUserId;
+    @Column(name = "verified_by_user_id")
+    private Long verifiedByUserId;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

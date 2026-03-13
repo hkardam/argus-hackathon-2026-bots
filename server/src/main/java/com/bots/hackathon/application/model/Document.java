@@ -15,36 +15,36 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor
 public class Document {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "application_id", nullable = false)
-  private UUID applicationId;
+    @Column(name = "application_id", nullable = false)
+    private UUID applicationId;
 
-  @Column(name = "file_name", nullable = false)
-  private String fileName;
+    @Column(name = "file_name", nullable = false)
+    private String fileName;
 
-  @Column(name = "file_type")
-  private String fileType;
+    @Column(name = "file_type")
+    private String fileType;
 
-  @Column(name = "file_size")
-  private Long fileSize;
+    @Column(name = "file_size")
+    private Long fileSize;
 
-  @Column(name = "storage_path")
-  private String storagePath;
+    @Column(name = "storage_path")
+    private String storagePath;
 
-  @Column(name = "uploaded_by_user_id", nullable = false)
-  private Long uploadedByUserId;
+    @Column(name = "uploaded_by_user_id", nullable = false)
+    private Long uploadedByUserId;
 
-  @Column(nullable = false)
-  @Builder.Default
-  private Boolean deleted = false;
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean deleted = false;
 
-  @Column(name = "deleted_at")
-  private LocalDateTime deletedAt;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }

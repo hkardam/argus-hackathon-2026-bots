@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ReportResponse(
-    UUID id,
-    UUID grantAwardId,
-    Long submittedByUserId,
-    String reportType,
-    String content,
-    ReportStatus status,
-    LocalDateTime submittedAt,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt) {}
+        UUID id,
+        UUID grantAwardId,
+        Long submittedByUserId,
+        String reportType,
+        String content,
+        ReportStatus status,
+        LocalDateTime submittedAt,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {}

@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record CreateApplicationRequest(
-    @NotNull(message = "Programme ID is required") UUID programmeId,
-    @NotNull(message = "Organisation ID is required") UUID organisationId,
-    @NotBlank(message = "Title is required") String title,
-    String summary,
-    BigDecimal requestedAmount) {}
+        @NotNull(message = "Programme ID is required") UUID programmeId,
+        @NotNull(message = "Organisation ID is required") UUID organisationId,
+        @NotBlank(message = "Title is required") String title,
+        String summary,
+        BigDecimal requestedAmount) {}

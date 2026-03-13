@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
 
-  Optional<Application> findByIdAndDeletedFalse(UUID id);
+    Optional<Application> findByIdAndDeletedFalse(UUID id);
 
-  List<Application> findByApplicantUserIdAndDeletedFalse(Long applicantUserId);
+    List<Application> findByApplicantUserIdAndDeletedFalse(Long applicantUserId);
 
-  List<Application> findByProgrammeIdAndDeletedFalse(UUID programmeId);
+    List<Application> findByProgrammeIdAndDeletedFalse(UUID programmeId);
 
-  List<Application> findByOrganisationIdAndDeletedFalse(UUID organisationId);
+    List<Application> findByOrganisationIdAndDeletedFalse(UUID organisationId);
 
-  List<Application> findByStatusAndDeletedFalse(ApplicationStatus status);
+    List<Application> findByStatusAndDeletedFalse(ApplicationStatus status);
 }

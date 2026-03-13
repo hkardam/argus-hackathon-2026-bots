@@ -22,116 +22,118 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ApplicationService {
 
-  private final ApplicationRepository applicationRepository;
-  private final ApplicationSectionDataRepository sectionDataRepository;
+    private final ApplicationRepository applicationRepository;
+    private final ApplicationSectionDataRepository sectionDataRepository;
 
-  @Transactional
-  @LoggableAction(actionType = "CREATE", objectType = "APPLICATION")
-  public ApplicationResponse createDraft(CreateApplicationRequest request, Long applicantUserId) {
-    Application app =
-        Application.builder()
-            .programmeId(request.programmeId())
-            .organisationId(request.organisationId())
-            .applicantUserId(applicantUserId)
-            .title(request.title())
-            .summary(request.summary())
-            .requestedAmount(request.requestedAmount())
-            .status(ApplicationStatus.DRAFT)
-            .build();
-    return toResponse(applicationRepository.save(app));
-  }
-
-  @Transactional
-  @LoggableAction(
-      actionType = "UPDATE_SECTION",
-      objectType = "APPLICATION",
-      objectIdExpression = "#applicationId.toString()")
-  public void updateSection(UUID applicationId, UpdateSectionRequest request) {
-    Application app =
-        applicationRepository
-            .findByIdAndDeletedFalse(applicationId)
-            .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId));
-
-    if (app.getStatus() != ApplicationStatus.DRAFT) {
-      throw new InvalidStateTransitionException(
-          app.getStatus().name(), "Cannot update sections of non-draft application");
+    @Transactional
+    @LoggableAction(actionType = "CREATE", objectType = "APPLICATION")
+    public ApplicationResponse createDraft(CreateApplicationRequest request, Long applicantUserId) {
+        Application app =
+                Application.builder()
+                        .programmeId(request.programmeId())
+                        .organisationId(request.organisationId())
+                        .applicantUserId(applicantUserId)
+                        .title(request.title())
+                        .summary(request.summary())
+                        .requestedAmount(request.requestedAmount())
+                        .status(ApplicationStatus.DRAFT)
+                        .build();
+        return toResponse(applicationRepository.save(app));
     }
 
-    ApplicationSectionData section =
-        sectionDataRepository
-            .findByApplicationIdAndSectionKey(applicationId, request.sectionKey())
-            .orElse(
-                ApplicationSectionData.builder()
-                    .applicationId(applicationId)
-                    .sectionKey(request.sectionKey())
-                    .build());
+    @Transactional
+    @LoggableAction(
+            actionType = "UPDATE_SECTION",
+            objectType = "APPLICATION",
+            objectIdExpression = "#applicationId.toString()")
+    public void updateSection(UUID applicationId, UpdateSectionRequest request) {
+        Application app =
+                applicationRepository
+                        .findByIdAndDeletedFalse(applicationId)
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException("Application", applicationId));
 
-    section.setSectionData(request.sectionData());
-    if (request.isComplete() != null) {
-      section.setIsComplete(request.isComplete());
+        if (app.getStatus() != ApplicationStatus.DRAFT) {
+            throw new InvalidStateTransitionException(
+                    app.getStatus().name(), "Cannot update sections of non-draft application");
+        }
+
+        ApplicationSectionData section =
+                sectionDataRepository
+                        .findByApplicationIdAndSectionKey(applicationId, request.sectionKey())
+                        .orElse(
+                                ApplicationSectionData.builder()
+                                        .applicationId(applicationId)
+                                        .sectionKey(request.sectionKey())
+                                        .build());
+
+        section.setSectionData(request.sectionData());
+        if (request.isComplete() != null) {
+            section.setIsComplete(request.isComplete());
+        }
+        sectionDataRepository.save(section);
     }
-    sectionDataRepository.save(section);
-  }
 
-  @Transactional
-  @LoggableAction(
-      actionType = "SUBMIT",
-      objectType = "APPLICATION",
-      objectIdExpression = "#applicationId.toString()")
-  public ApplicationResponse submit(UUID applicationId) {
-    Application app =
-        applicationRepository
-            .findByIdAndDeletedFalse(applicationId)
-            .orElseThrow(() -> new ResourceNotFoundException("Application", applicationId));
+    @Transactional
+    @LoggableAction(
+            actionType = "SUBMIT",
+            objectType = "APPLICATION",
+            objectIdExpression = "#applicationId.toString()")
+    public ApplicationResponse submit(UUID applicationId) {
+        Application app =
+                applicationRepository
+                        .findByIdAndDeletedFalse(applicationId)
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException("Application", applicationId));
 
-    if (app.getStatus() != ApplicationStatus.DRAFT) {
-      throw new InvalidStateTransitionException(app.getStatus().name(), "SUBMITTED");
+        if (app.getStatus() != ApplicationStatus.DRAFT) {
+            throw new InvalidStateTransitionException(app.getStatus().name(), "SUBMITTED");
+        }
+
+        // TODO: Validate all required sections are complete
+        // TODO: Validate budget totals
+
+        app.setStatus(ApplicationStatus.SUBMITTED);
+        app.setSubmittedAt(LocalDateTime.now());
+        return toResponse(applicationRepository.save(app));
     }
 
-    // TODO: Validate all required sections are complete
-    // TODO: Validate budget totals
+    @Transactional(readOnly = true)
+    public ApplicationResponse getById(UUID id) {
+        Application app =
+                applicationRepository
+                        .findByIdAndDeletedFalse(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Application", id));
+        return toResponse(app);
+    }
 
-    app.setStatus(ApplicationStatus.SUBMITTED);
-    app.setSubmittedAt(LocalDateTime.now());
-    return toResponse(applicationRepository.save(app));
-  }
+    @Transactional(readOnly = true)
+    public List<ApplicationResponse> listByApplicant(Long applicantUserId) {
+        return applicationRepository.findByApplicantUserIdAndDeletedFalse(applicantUserId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
-  @Transactional(readOnly = true)
-  public ApplicationResponse getById(UUID id) {
-    Application app =
-        applicationRepository
-            .findByIdAndDeletedFalse(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Application", id));
-    return toResponse(app);
-  }
+    @Transactional(readOnly = true)
+    public List<ApplicationResponse> listByProgramme(UUID programmeId) {
+        return applicationRepository.findByProgrammeIdAndDeletedFalse(programmeId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
-  @Transactional(readOnly = true)
-  public List<ApplicationResponse> listByApplicant(Long applicantUserId) {
-    return applicationRepository.findByApplicantUserIdAndDeletedFalse(applicantUserId).stream()
-        .map(this::toResponse)
-        .toList();
-  }
-
-  @Transactional(readOnly = true)
-  public List<ApplicationResponse> listByProgramme(UUID programmeId) {
-    return applicationRepository.findByProgrammeIdAndDeletedFalse(programmeId).stream()
-        .map(this::toResponse)
-        .toList();
-  }
-
-  private ApplicationResponse toResponse(Application app) {
-    return new ApplicationResponse(
-        app.getId(),
-        app.getProgrammeId(),
-        app.getOrganisationId(),
-        app.getApplicantUserId(),
-        app.getTitle(),
-        app.getSummary(),
-        app.getRequestedAmount(),
-        app.getStatus(),
-        app.getSubmittedAt(),
-        app.getSlaDeadline(),
-        app.getCreatedAt(),
-        app.getUpdatedAt());
-  }
+    private ApplicationResponse toResponse(Application app) {
+        return new ApplicationResponse(
+                app.getId(),
+                app.getProgrammeId(),
+                app.getOrganisationId(),
+                app.getApplicantUserId(),
+                app.getTitle(),
+                app.getSummary(),
+                app.getRequestedAmount(),
+                app.getStatus(),
+                app.getSubmittedAt(),
+                app.getSlaDeadline(),
+                app.getCreatedAt(),
+                app.getUpdatedAt());
+    }
 }

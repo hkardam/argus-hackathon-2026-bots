@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StubReviewAiService implements ReviewAiService {
 
-  @Override
-  public ReviewAiResponse generateReviewSuggestion(ReviewAiRequest request) {
-    log.info("AI Review suggestion stub called for application: {}", request.applicationId());
-    // TODO: Replace with actual AI integration
-    return new ReviewAiResponse(
-        0,
-        ReviewOutcome.NEEDS_REVISION,
-        "AI Suggested: Stub strengths",
-        "AI Suggested: Stub weaknesses",
-        "AI Suggested: Stub comments");
-  }
+    @Override
+    public ReviewAiResponse generateReviewSuggestion(ReviewAiRequest request) {
+        log.info("AI Review suggestion stub called for application: {}", request.applicationId());
+        // TODO: Replace with actual AI integration
+        return new ReviewAiResponse(
+                0,
+                ReviewOutcome.NEEDS_REVISION,
+                "AI Suggested: Stub strengths",
+                "AI Suggested: Stub weaknesses",
+                "AI Suggested: Stub comments");
+    }
 }

@@ -19,41 +19,41 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 public class DisbursementTranche {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "grant_award_id", nullable = false)
-  private UUID grantAwardId;
+    @Column(name = "grant_award_id", nullable = false)
+    private UUID grantAwardId;
 
-  @Column(name = "tranche_number", nullable = false)
-  private Integer trancheNumber;
+    @Column(name = "tranche_number", nullable = false)
+    private Integer trancheNumber;
 
-  @Column(name = "amount", precision = 19, scale = 2, nullable = false)
-  private BigDecimal amount;
+    @Column(name = "amount", precision = 19, scale = 2, nullable = false)
+    private BigDecimal amount;
 
-  @Column(name = "scheduled_date")
-  private LocalDate scheduledDate;
+    @Column(name = "scheduled_date")
+    private LocalDate scheduledDate;
 
-  @Column(name = "released_date")
-  private LocalDate releasedDate;
+    @Column(name = "released_date")
+    private LocalDate releasedDate;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  @Builder.Default
-  private DisbursementStatus status = DisbursementStatus.SCHEDULED;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private DisbursementStatus status = DisbursementStatus.SCHEDULED;
 
-  @Column(name = "released_by_user_id")
-  private Long releasedByUserId;
+    @Column(name = "released_by_user_id")
+    private Long releasedByUserId;
 
-  @Column(columnDefinition = "TEXT")
-  private String notes;
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

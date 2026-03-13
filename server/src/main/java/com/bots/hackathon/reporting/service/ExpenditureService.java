@@ -17,59 +17,59 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ExpenditureService {
 
-  private final ExpenditureRecordRepository expenditureRepository;
+    private final ExpenditureRecordRepository expenditureRepository;
 
-  @Transactional
-  @LoggableAction(actionType = "CREATE", objectType = "EXPENDITURE_RECORD")
-  public ExpenditureRecordResponse create(CreateExpenditureRequest request) {
-    ExpenditureRecord record =
-        ExpenditureRecord.builder()
-            .grantAwardId(request.grantAwardId())
-            .category(request.category())
-            .description(request.description())
-            .amount(request.amount())
-            .expenditureDate(request.expenditureDate())
-            .receiptDocumentId(request.receiptDocumentId())
-            .build();
-    return toResponse(expenditureRepository.save(record));
-  }
+    @Transactional
+    @LoggableAction(actionType = "CREATE", objectType = "EXPENDITURE_RECORD")
+    public ExpenditureRecordResponse create(CreateExpenditureRequest request) {
+        ExpenditureRecord record =
+                ExpenditureRecord.builder()
+                        .grantAwardId(request.grantAwardId())
+                        .category(request.category())
+                        .description(request.description())
+                        .amount(request.amount())
+                        .expenditureDate(request.expenditureDate())
+                        .receiptDocumentId(request.receiptDocumentId())
+                        .build();
+        return toResponse(expenditureRepository.save(record));
+    }
 
-  @Transactional
-  @LoggableAction(
-      actionType = "UPDATE_VERIFICATION",
-      objectType = "EXPENDITURE_RECORD",
-      objectIdExpression = "#id.toString()")
-  public ExpenditureRecordResponse updateVerificationStatus(
-      UUID id, UpdateVerificationRequest request, Long verifiedByUserId) {
-    ExpenditureRecord record =
-        expenditureRepository
-            .findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("ExpenditureRecord", id));
+    @Transactional
+    @LoggableAction(
+            actionType = "UPDATE_VERIFICATION",
+            objectType = "EXPENDITURE_RECORD",
+            objectIdExpression = "#id.toString()")
+    public ExpenditureRecordResponse updateVerificationStatus(
+            UUID id, UpdateVerificationRequest request, Long verifiedByUserId) {
+        ExpenditureRecord record =
+                expenditureRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("ExpenditureRecord", id));
 
-    record.setVerificationStatus(request.verificationStatus());
-    record.setVerifiedByUserId(verifiedByUserId);
-    return toResponse(expenditureRepository.save(record));
-  }
+        record.setVerificationStatus(request.verificationStatus());
+        record.setVerifiedByUserId(verifiedByUserId);
+        return toResponse(expenditureRepository.save(record));
+    }
 
-  @Transactional(readOnly = true)
-  public List<ExpenditureRecordResponse> listByGrantAwardId(UUID grantAwardId) {
-    return expenditureRepository.findByGrantAwardId(grantAwardId).stream()
-        .map(this::toResponse)
-        .toList();
-  }
+    @Transactional(readOnly = true)
+    public List<ExpenditureRecordResponse> listByGrantAwardId(UUID grantAwardId) {
+        return expenditureRepository.findByGrantAwardId(grantAwardId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
-  private ExpenditureRecordResponse toResponse(ExpenditureRecord r) {
-    return new ExpenditureRecordResponse(
-        r.getId(),
-        r.getGrantAwardId(),
-        r.getCategory(),
-        r.getDescription(),
-        r.getAmount(),
-        r.getExpenditureDate(),
-        r.getReceiptDocumentId(),
-        r.getVerificationStatus(),
-        r.getVerifiedByUserId(),
-        r.getCreatedAt(),
-        r.getUpdatedAt());
-  }
+    private ExpenditureRecordResponse toResponse(ExpenditureRecord r) {
+        return new ExpenditureRecordResponse(
+                r.getId(),
+                r.getGrantAwardId(),
+                r.getCategory(),
+                r.getDescription(),
+                r.getAmount(),
+                r.getExpenditureDate(),
+                r.getReceiptDocumentId(),
+                r.getVerificationStatus(),
+                r.getVerifiedByUserId(),
+                r.getCreatedAt(),
+                r.getUpdatedAt());
+    }
 }

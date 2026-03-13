@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MaskIfRole {
-  /** Comma separated list of roles that WILL NOT see this field. e.g., "APPLICANT,REVIEWER" */
-  String restrictedRoles();
+    /** Comma separated list of roles that WILL NOT see this field. e.g., "APPLICANT,REVIEWER" */
+    String restrictedRoles();
 }

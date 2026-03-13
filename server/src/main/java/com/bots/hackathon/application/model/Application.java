@@ -11,11 +11,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(
-    name = "applications",
-    indexes = {
-      @Index(name = "idx_app_programme_id", columnList = "programme_id"),
-      @Index(name = "idx_app_organisation_id", columnList = "organisation_id")
-    })
+        name = "applications",
+        indexes = {
+            @Index(name = "idx_app_programme_id", columnList = "programme_id"),
+            @Index(name = "idx_app_organisation_id", columnList = "organisation_id")
+        })
 @Getter
 @Setter
 @Builder
@@ -23,51 +23,51 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 public class Application {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "programme_id", nullable = false)
-  private UUID programmeId;
+    @Column(name = "programme_id", nullable = false)
+    private UUID programmeId;
 
-  @Column(name = "organisation_id", nullable = false)
-  private UUID organisationId;
+    @Column(name = "organisation_id", nullable = false)
+    private UUID organisationId;
 
-  @Column(name = "applicant_user_id", nullable = false)
-  private Long applicantUserId;
+    @Column(name = "applicant_user_id", nullable = false)
+    private Long applicantUserId;
 
-  @Column(nullable = false)
-  private String title;
+    @Column(nullable = false)
+    private String title;
 
-  @Column(columnDefinition = "TEXT")
-  private String summary;
+    @Column(columnDefinition = "TEXT")
+    private String summary;
 
-  @Column(name = "requested_amount", precision = 19, scale = 2)
-  private BigDecimal requestedAmount;
+    @Column(name = "requested_amount", precision = 19, scale = 2)
+    private BigDecimal requestedAmount;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  @Builder.Default
-  private ApplicationStatus status = ApplicationStatus.DRAFT;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private ApplicationStatus status = ApplicationStatus.DRAFT;
 
-  @Column(name = "submitted_at")
-  private LocalDateTime submittedAt;
+    @Column(name = "submitted_at")
+    private LocalDateTime submittedAt;
 
-  @Column(name = "sla_deadline")
-  private LocalDateTime slaDeadline;
+    @Column(name = "sla_deadline")
+    private LocalDateTime slaDeadline;
 
-  @Column(nullable = false)
-  @Builder.Default
-  private Boolean deleted = false;
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean deleted = false;
 
-  @Column(name = "deleted_at")
-  private LocalDateTime deletedAt;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

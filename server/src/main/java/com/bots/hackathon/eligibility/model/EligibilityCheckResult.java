@@ -15,30 +15,30 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor
 public class EligibilityCheckResult {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  @Column(name = "application_id", nullable = false)
-  private UUID applicationId;
+    @Column(name = "application_id", nullable = false)
+    private UUID applicationId;
 
-  @Column(name = "is_eligible")
-  private Boolean isEligible;
+    @Column(name = "is_eligible")
+    private Boolean isEligible;
 
-  @Column(name = "ai_suggested")
-  @Builder.Default
-  private Boolean aiSuggested = false;
+    @Column(name = "ai_suggested")
+    @Builder.Default
+    private Boolean aiSuggested = false;
 
-  @Column(name = "criteria_results", columnDefinition = "TEXT")
-  private String criteriaResults;
+    @Column(name = "criteria_results", columnDefinition = "TEXT")
+    private String criteriaResults;
 
-  @Column(columnDefinition = "TEXT")
-  private String notes;
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 
-  @Column(name = "checked_by_user_id")
-  private Long checkedByUserId;
+    @Column(name = "checked_by_user_id")
+    private Long checkedByUserId;
 
-  @CreationTimestamp
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 }
