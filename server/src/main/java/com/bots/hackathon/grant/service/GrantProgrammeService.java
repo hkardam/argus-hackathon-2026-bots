@@ -15,6 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class GrantProgrammeService {
 
     private final GrantProgrammeRepository grantProgrammeRepository;
+    private final com.bots.hackathon.ai.services.AIService aiService;
+
+    @Transactional
+    public com.bots.hackathon.ai.dto.EligibilityAiResponse checkEligibility(
+            com.bots.hackathon.ai.dto.EligibilityAiRequest request) {
+        GrantProgrammeResponse gp = getProgrammeById(request.programmeId());
+        return aiService.checkEligibility(request, gp);
+    }
 
     @Transactional(readOnly = true)
     public List<GrantProgrammeResponse> getAllActiveProgrammes() {
@@ -42,6 +50,7 @@ public class GrantProgrammeService {
                 programme.getMaxAwardAmount(),
                 programme.getApplicationOpenDate(),
                 programme.getApplicationCloseDate(),
+                programme.getEligibilityCriteria(),
                 programme.getCurrentStage(),
                 programme.getIsActive());
     }

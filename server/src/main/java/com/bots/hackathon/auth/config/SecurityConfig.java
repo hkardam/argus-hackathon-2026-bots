@@ -32,8 +32,12 @@ public class SecurityConfig {
     private final SecurityAuthenticationEntryPoint authenticationEntryPoint;
     private final SecurityAccessDeniedHandler accessDeniedHandler;
 
-//    private static final List<String> PUBLIC_ENDPOINTS =
-//            List.of("/api/auth/login", "/api/auth/oauth2/**", "/api/auth/health");
+    private static final List<String> PUBLIC_ENDPOINTS =
+            List.of(
+                    "/api/auth/login",
+                    "/api/auth/oauth2/**",
+                    "/ai/auth/health",
+                    "/api/programmes/**");
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,11 +48,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        // Allow unauthenticated access to public endpoints (if any)
+                                        // Allow unauthenticated access to public endpoints (if
+                                        // any)
                                         .requestMatchers(
                                                 "/api/auth/login",
-                                            "/api/auth/signup",
-                                            "/api/programmes/**",
+                                                "/api/auth/signup",
+                                                "/api/programmes/**",
                                                 "/api/auth/oauth2/**")
                                         .permitAll()
                                         .requestMatchers("/api/admin/**")
@@ -74,7 +79,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
                 Arrays.asList(
-                        "http://localhost:3000", "http://localhost:5174", "http://localhost:8080"));
+                        "http://localhost:3000", "http://localhost:5174", "http://localhost:8086"));
         configuration.setAllowedMethods(
                 Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));

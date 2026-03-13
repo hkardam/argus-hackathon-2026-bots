@@ -25,4 +25,10 @@ public class GrantProgrammeController {
     public ResponseEntity<ApiResponse<GrantProgrammeResponse>> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(ApiResponse.ok(grantProgrammeService.getProgrammeById(id)));
     }
+
+    @PostMapping("/check-eligibility")
+    public ResponseEntity<ApiResponse<com.bots.hackathon.ai.dto.EligibilityAiResponse>>
+            checkEligibility(@RequestBody com.bots.hackathon.ai.dto.EligibilityAiRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(grantProgrammeService.checkEligibility(request)));
+    }
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle2, HelpCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle2, HelpCircle, ArrowRight, XCircle, AlertCircle } from 'lucide-react';
 import type { GrantProgramme } from '../../grants/types';
+import { eligibilityService } from '../services/eligibilityService';
+import type { EligibilityAiResponse } from '../types';
 
 interface EligibilityCheckProps {
   selectedGrant: GrantProgramme | null;
@@ -10,6 +12,8 @@ export default function EligibilityCheck({ selectedGrant }: EligibilityCheckProp
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isChecking, setIsChecking] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [result, setResult] = useState<EligibilityAiResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const getGrantCode = (name: string) => {
     if (name.includes('CDG')) return 'CDG';
@@ -23,6 +27,8 @@ export default function EligibilityCheck({ selectedGrant }: EligibilityCheckProp
   useEffect(() => {
     setFormData({});
     setShowResults(false);
+    setResult(null);
+    setError(null);
   }, [selectedGrant]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -30,26 +36,27 @@ export default function EligibilityCheck({ selectedGrant }: EligibilityCheckProp
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCheck = (e: React.FormEvent) => {
+  const handleCheck = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedGrant) return;
+
     setIsChecking(true);
+    setError(null);
+    setResult(null);
 
-    // Create response object
-    const response = {
-      grantId: selectedGrant?.id,
-      grantName: selectedGrant?.name,
-      grantCode,
-      submissionTime: new Date().toISOString(),
-      eligibilityData: formData
-    };
-
-    console.log('Eligibility Check Response:', response);
-
-    // Simulate API call for UI feedback
-    setTimeout(() => {
-      setIsChecking(false);
+    try {
+      const response = await eligibilityService.check({
+        programmeId: selectedGrant.id,
+        data: formData
+      });
+      setResult(response);
       setShowResults(true);
-    }, 1500);
+    } catch (err: any) {
+      console.error('Eligibility check failed:', err);
+      setError('Failed to check eligibility. Please try again later.');
+    } finally {
+      setIsChecking(false);
+    }
   };
 
   const renderCommonFields = () => (
@@ -198,6 +205,38 @@ export default function EligibilityCheck({ selectedGrant }: EligibilityCheckProp
                 {grantCode === 'ECAG' && renderECAGFields()}
                 {grantCode === 'DEFAULT' && renderCommonFields()}
 
+                {result && (
+                  <div className={`p-4 rounded-xl border ${result.eligible === 'Yes'
+                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
+                      : 'bg-red-500/10 border-red-500/50 text-red-400'
+                    } transition-all duration-300 animate-in fade-in slide-in-from-bottom-2`}>
+                    <div className="flex items-start gap-3">
+                      {result.eligible === 'Yes' ? (
+                        <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" />
+                      ) : (
+                        <XCircle className="h-5 w-5 shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <p className="font-semibold">
+                          Eligibility: {result.eligible}
+                        </p>
+                        <p className="text-sm opacity-90 mt-1">
+                          {result.feedback}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="p-4 rounded-xl border bg-red-500/10 border-red-500/50 text-red-400 animate-in fade-in slide-in-from-bottom-2">
+                    <div className="flex items-center gap-3">
+                      <AlertCircle className="h-5 w-5 shrink-0" />
+                      <p className="text-sm">{error}</p>
+                    </div>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={isChecking}
@@ -231,21 +270,32 @@ export default function EligibilityCheck({ selectedGrant }: EligibilityCheckProp
               </div>
             )}
 
-            {showResults && !isChecking && (
+            {showResults && !isChecking && result && (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h3 className="text-xl font-semibold text-white mb-4">Results for {selectedGrant?.name}</h3>
-                <div className="bg-dark/50 rounded-xl p-6 border border-primary-ring/40">
+                <div className={`rounded-xl p-6 border ${result.eligible === 'Yes'
+                    ? 'bg-emerald-500/10 border-emerald-500/40'
+                    : 'bg-red-500/10 border-red-500/40'
+                  }`}>
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-8 w-8 text-primary-muted shrink-0" />
+                    {result.eligible === 'Yes' ? (
+                      <CheckCircle2 className="h-8 w-8 text-emerald-400 shrink-0" />
+                    ) : (
+                      <XCircle className="h-8 w-8 text-red-400 shrink-0" />
+                    )}
                     <div>
-                      <h4 className="text-lg font-medium text-white">Application Pre-check Passed</h4>
-                      <p className="text-sm text-primary-muted mt-2">
-                        Based on your inputs, you meet the initial criteria for this grant.
-                        A detailed response has been logged to the console.
+                      <h4 className="text-lg font-medium text-white">
+                        {result.eligible === 'Yes' ? 'Application Pre-check Passed' : 'Application Pre-check Failed'}
+                      </h4>
+                      <p className={`text-sm mt-2 ${result.eligible === 'Yes' ? 'text-emerald-400' : 'text-red-400/80'
+                        }`}>
+                        {result.feedback}
                       </p>
-                      <button className="mt-6 inline-flex items-center px-4 py-2 bg-primary-muted text-dark rounded-lg text-sm font-semibold hover:bg-primary-ring transition-colors">
-                        Start Full Application <ArrowRight className="ml-2 h-4 w-4" />
-                      </button>
+                      {result.eligible === 'Yes' && (
+                        <button className="mt-6 inline-flex items-center px-4 py-2 bg-primary-muted text-dark rounded-lg text-sm font-semibold hover:bg-primary-ring transition-colors">
+                          Start Full Application <ArrowRight className="ml-2 h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

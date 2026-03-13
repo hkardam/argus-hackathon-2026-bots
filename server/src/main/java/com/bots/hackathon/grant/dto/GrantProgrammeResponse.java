@@ -15,5 +15,6 @@ public record GrantProgrammeResponse(
         BigDecimal maxAwardAmount,
         LocalDate applicationOpenDate,
         LocalDate applicationCloseDate,
+        String eligibilityCriteria,
         WorkflowStage currentStage,
         Boolean isActive) {}

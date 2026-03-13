@@ -1,4 +1,4 @@
-package com.bots.hackathon.ai.controller.utils;
+package com.bots.hackathon.ai.dto;
 
 public enum ChatAuthor {
     SYSTEM,

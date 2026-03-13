@@ -30,6 +30,9 @@ public class GrantProgramme {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "eligibility_criteria", columnDefinition = "TEXT")
+    private String eligibilityCriteria;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "grant_type", nullable = false)
     private GrantType grantType;
