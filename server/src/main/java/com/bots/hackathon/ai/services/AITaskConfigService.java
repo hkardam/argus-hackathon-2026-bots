@@ -4,10 +4,9 @@ import com.bots.hackathon.ai.dto.AITaskConfigRequest;
 import com.bots.hackathon.ai.dto.AITaskConfigResponse;
 import com.bots.hackathon.ai.model.AITaskConfig;
 import com.bots.hackathon.ai.repo.AITaskConfigRepo;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +36,9 @@ public class AITaskConfigService {
     }
 
     public AITaskConfigResponse update(Long id, AITaskConfigRequest request) {
-        AITaskConfig entity = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("AITaskConfig not found: " + id));
+        AITaskConfig entity =
+                repo.findById(id)
+                        .orElseThrow(() -> new RuntimeException("AITaskConfig not found: " + id));
         entity.setTaskCode(request.taskCode());
         entity.setTaskName(request.taskName());
         entity.setSystemPrompt(request.systemPrompt());
@@ -55,8 +55,14 @@ public class AITaskConfigService {
 
     private AITaskConfigResponse toResponse(AITaskConfig e) {
         return new AITaskConfigResponse(
-                e.getId(), e.getTaskCode(), e.getTaskName(), e.getSystemPrompt(),
-                e.getProvider(), e.getModel(), e.getMaxTokens(), e.getTemperature());
+                e.getId(),
+                e.getTaskCode(),
+                e.getTaskName(),
+                e.getSystemPrompt(),
+                e.getProvider(),
+                e.getModel(),
+                e.getMaxTokens(),
+                e.getTemperature());
     }
 
     private AITaskConfig toEntity(AITaskConfigRequest r) {

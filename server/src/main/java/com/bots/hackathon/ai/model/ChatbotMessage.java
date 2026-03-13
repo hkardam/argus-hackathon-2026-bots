@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
-@Table(name = "chat_bot_message")
+    @Table(name = "chat_bot_message")
 public class ChatbotMessage {
 
     @Id
@@ -39,5 +41,5 @@ public class ChatbotMessage {
     private boolean completed;
 
     @Column(nullable = false, updatable = false)
-    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

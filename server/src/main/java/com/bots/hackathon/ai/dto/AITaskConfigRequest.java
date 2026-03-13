@@ -7,5 +7,4 @@ public record AITaskConfigRequest(
         LLMProviderEnum provider,
         String model,
         Integer maxTokens,
-        Double temperature
-) {}
+        Double temperature) {}

@@ -3,11 +3,10 @@ package com.bots.hackathon.ai.controller;
 import com.bots.hackathon.ai.dto.AITaskConfigRequest;
 import com.bots.hackathon.ai.dto.AITaskConfigResponse;
 import com.bots.hackathon.ai.services.AITaskConfigService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/ai-task-configs")
@@ -33,7 +32,8 @@ public class AITaskConfigController {
     }
 
     @PutMapping("/{id}")
-    public AITaskConfigResponse update(@PathVariable Long id, @RequestBody AITaskConfigRequest request) {
+    public AITaskConfigResponse update(
+            @PathVariable Long id, @RequestBody AITaskConfigRequest request) {
         return service.update(id, request);
     }
 

@@ -1,12 +1,10 @@
 package com.bots.hackathon.ai.services;
 
-import org.springframework.stereotype.Service;
-
 import com.bots.hackathon.ai.dto.AITaskConfigResponse;
 import com.bots.hackathon.ai.dto.LLMRequest;
 import com.bots.hackathon.ai.dto.LLMResponse;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
