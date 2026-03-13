@@ -36,7 +36,7 @@ public class AuthService {
         user.setName(request.name());
         user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
-        user.setRole(Role.APPLICANT);
+        user.setRole(request.role() != null ? request.role() : Role.APPLICANT);
         user.setIsEmailVerified(false);
         user.setIsActive(true);
 
