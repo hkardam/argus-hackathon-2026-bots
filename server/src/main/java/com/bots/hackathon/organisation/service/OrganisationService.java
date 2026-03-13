@@ -9,12 +9,11 @@ import com.bots.hackathon.organisation.dto.UpdateOrganisationRequest;
 import com.bots.hackathon.organisation.model.Organisation;
 import com.bots.hackathon.organisation.repo.OrganisationRepository;
 import com.bots.hackathon.security.guard.AuthorizationGuard;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +49,7 @@ public class OrganisationService {
                         .orElseThrow(() -> new ResourceNotFoundException("Organisation", id));
 
         if (!org.getOwnerUserId().equals(userId) && !authorizationGuard.isStaff()) {
-            throw new AccessDeniedException(
-                    "User does not own organisation " + id);
+            throw new AccessDeniedException("User does not own organisation " + id);
         }
 
         if (request.name() != null) org.setName(request.name());

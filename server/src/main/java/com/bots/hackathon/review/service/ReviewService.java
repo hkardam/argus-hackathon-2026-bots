@@ -5,6 +5,7 @@ import com.bots.hackathon.application.repo.ApplicationRepository;
 import com.bots.hackathon.audit.aspect.LoggableAction;
 import com.bots.hackathon.auth.model.UserEntity;
 import com.bots.hackathon.auth.repo.UserRepository;
+import com.bots.hackathon.common.exception.AccessDeniedException;
 import com.bots.hackathon.common.exception.BusinessException;
 import com.bots.hackathon.common.exception.ResourceNotFoundException;
 import com.bots.hackathon.notification.event.NotificationEventPublisher;
@@ -39,22 +40,25 @@ public class ReviewService {
                 applicationRepository
                         .findByIdAndDeletedFalse(request.applicationId())
                         .orElseThrow(
-                                () -> new ResourceNotFoundException(
-                                        "Application", request.applicationId()));
+                                () ->
+                                        new ResourceNotFoundException(
+                                                "Application", request.applicationId()));
 
         UserEntity reviewer =
                 userRepository
                         .findById(request.reviewerUserId())
                         .orElseThrow(
-                                () -> new ResourceNotFoundException(
-                                        "User", request.reviewerUserId()));
+                                () ->
+                                        new ResourceNotFoundException(
+                                                "User", request.reviewerUserId()));
 
         UserEntity applicant =
                 userRepository
                         .findById(application.getApplicantUserId())
                         .orElseThrow(
-                                () -> new ResourceNotFoundException(
-                                        "User", application.getApplicantUserId()));
+                                () ->
+                                        new ResourceNotFoundException(
+                                                "User", application.getApplicantUserId()));
 
         if (!authorizationGuard.passesConflictOfInterestCheck(
                 reviewer.getEmail(), applicant.getEmail())) {
@@ -73,8 +77,7 @@ public class ReviewService {
         ReviewAssignment saved = assignmentRepository.save(assignment);
 
         notificationEventPublisher.onReviewAssigned(
-                request.reviewerUserId(),
-                request.applicationId().toString());
+                request.reviewerUserId(), request.applicationId().toString());
 
         return toAssignmentResponse(saved);
     }
@@ -92,6 +95,18 @@ public class ReviewService {
             objectType = "REVIEW",
             objectIdExpression = "#request.applicationId().toString()")
     public ReviewResponse submitReview(SubmitReviewRequest request, Long reviewerUserId) {
+        if (!assignmentRepository.existsByApplicationIdAndReviewerUserId(
+                request.applicationId(), reviewerUserId)) {
+            throw new AccessDeniedException("You are not assigned to review this application.");
+        }
+
+        if (reviewRepository
+                .findByApplicationIdAndReviewerUserId(request.applicationId(), reviewerUserId)
+                .isPresent()) {
+            throw new BusinessException(
+                    "You have already submitted a review for this application.");
+        }
+
         Review review =
                 Review.builder()
                         .applicationId(request.applicationId())

@@ -48,14 +48,14 @@ public class WorkflowTransitionService {
                     Map.entry(ApplicationStatus.AWARDED, Set.of(ApplicationStatus.ACTIVE)),
                     Map.entry(ApplicationStatus.ACTIVE, Set.of(ApplicationStatus.COMPLETED)));
 
-    private static final Map<ApplicationStatus, Integer> SLA_DAYS_BY_STAGE = Map.of(
-            ApplicationStatus.SUBMITTED, 7,
-            ApplicationStatus.UNDER_ELIGIBILITY_CHECK, 14,
-            ApplicationStatus.UNDER_SCREENING, 21,
-            ApplicationStatus.UNDER_REVIEW, 14,
-            ApplicationStatus.REVIEWED, 7,
-            ApplicationStatus.APPROVED, 5
-    );
+    private static final Map<ApplicationStatus, Integer> SLA_DAYS_BY_STAGE =
+            Map.of(
+                    ApplicationStatus.SUBMITTED, 7,
+                    ApplicationStatus.UNDER_ELIGIBILITY_CHECK, 14,
+                    ApplicationStatus.UNDER_SCREENING, 21,
+                    ApplicationStatus.UNDER_REVIEW, 14,
+                    ApplicationStatus.REVIEWED, 7,
+                    ApplicationStatus.APPROVED, 5);
 
     @Transactional
     @LoggableAction(

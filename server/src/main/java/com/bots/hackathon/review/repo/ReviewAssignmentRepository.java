@@ -12,4 +12,6 @@ public interface ReviewAssignmentRepository extends JpaRepository<ReviewAssignme
     List<ReviewAssignment> findByApplicationId(UUID applicationId);
 
     List<ReviewAssignment> findByReviewerUserIdAndIsCompletedFalse(Long reviewerUserId);
+
+    boolean existsByApplicationIdAndReviewerUserId(UUID applicationId, Long reviewerUserId);
 }

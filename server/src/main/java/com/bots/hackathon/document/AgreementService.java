@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class AgreementService {
 
     /**
-     * Generates a grant agreement document for the given award.
-     * Requires TemplateRenderer and PdfGenerator implementations to be wired.
+     * Generates a grant agreement document for the given award. Requires TemplateRenderer and
+     * PdfGenerator implementations to be wired.
      */
     public byte[] generateAgreement(UUID grantAwardId) {
         log.info("Agreement generation requested for grant award: {}", grantAwardId);

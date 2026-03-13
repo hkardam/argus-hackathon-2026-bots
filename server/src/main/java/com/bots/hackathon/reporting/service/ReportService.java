@@ -76,11 +76,11 @@ public class ReportService {
                 applicationRepository
                         .findByIdAndDeletedFalse(award.getApplicationId())
                         .orElseThrow(
-                                () -> new ResourceNotFoundException(
-                                        "Application", award.getApplicationId()));
+                                () ->
+                                        new ResourceNotFoundException(
+                                                "Application", award.getApplicationId()));
         if (!application.getApplicantUserId().equals(userId)) {
-            throw new AccessDeniedException(
-                    "User does not have access to grant " + grantAwardId);
+            throw new AccessDeniedException("User does not have access to grant " + grantAwardId);
         }
     }
 

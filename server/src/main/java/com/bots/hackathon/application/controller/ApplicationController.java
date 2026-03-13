@@ -6,6 +6,7 @@ import com.bots.hackathon.application.dto.UpdateSectionRequest;
 import com.bots.hackathon.application.service.ApplicationService;
 import com.bots.hackathon.auth.service.AuthService;
 import com.bots.hackathon.common.dto.ApiResponse;
+import com.bots.hackathon.common.enums.ApplicationStatus;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -71,5 +72,34 @@ public class ApplicationController {
     public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listByProgramme(
             @PathVariable UUID programmeId) {
         return ResponseEntity.ok(ApiResponse.ok(applicationService.listByProgramme(programmeId)));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('PROGRAM_OFFICER')")
+    public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listAll() {
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.listAllActive()));
+    }
+
+    @GetMapping("/assigned")
+    @PreAuthorize("hasRole('REVIEWER')")
+    public ResponseEntity<ApiResponse<List<ApplicationResponse>>> listAssigned(
+            Principal principal) {
+        Long userId = authService.resolveUserId(principal);
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.listAssignedToReviewer(userId)));
+    }
+
+    @PatchMapping("/{id}/screening")
+    @PreAuthorize("hasRole('PROGRAM_OFFICER')")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> updateScreening(
+            @PathVariable UUID id, @RequestParam ApplicationStatus status) {
+        return ResponseEntity.ok(
+                ApiResponse.ok(applicationService.updateScreeningStatus(id, status)));
+    }
+
+    @PatchMapping("/{id}/decision")
+    @PreAuthorize("hasRole('PROGRAM_OFFICER')")
+    public ResponseEntity<ApiResponse<ApplicationResponse>> updateDecision(
+            @PathVariable UUID id, @RequestParam ApplicationStatus status) {
+        return ResponseEntity.ok(ApiResponse.ok(applicationService.updateDecision(id, status)));
     }
 }

@@ -13,9 +13,7 @@ public class NotificationEventPublisher {
 
     private final NotificationService notificationService;
 
-    /**
-     * Hook point for application status change events. Called from workflow transitions.
-     */
+    /** Hook point for application status change events. Called from workflow transitions. */
     public void onApplicationStatusChanged(
             Long recipientUserId, String applicationId, String oldStatus, String newStatus) {
         log.info(

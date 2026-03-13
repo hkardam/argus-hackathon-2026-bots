@@ -11,8 +11,7 @@ public record CreateExpenditureRequest(
         @NotNull(message = "Grant award ID is required") UUID grantAwardId,
         @NotBlank(message = "Category is required") String category,
         String description,
-        @NotNull(message = "Amount is required")
-                @Positive(message = "Amount must be positive")
+        @NotNull(message = "Amount is required") @Positive(message = "Amount must be positive")
                 BigDecimal amount,
         @NotNull(message = "Expenditure date is required") LocalDate expenditureDate,
         UUID receiptDocumentId) {}
