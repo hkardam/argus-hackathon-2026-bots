@@ -1,0 +1,7 @@
+dist
+node_modules
+package-lock.json
+.devcontainer
+Dockerfile
+docker-compose.yml
+nginx.conf

@@ -1,9 +1,3 @@
----
-trigger: always_on
-glob: client/**/*.{ts,tsx,css,html,js,json}
-description: Rule to enforce automated formatting over manual formatting
----
-
 # Frontend Formatting Rule
 
 **Do not perform manual formatting.**

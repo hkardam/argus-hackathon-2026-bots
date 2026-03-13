@@ -71,6 +71,7 @@ export default defineConfig([
   },
 ])
 ```
+
 ## Docker Setup
 
 The project is dockerized for both development and production environments.
@@ -105,12 +106,14 @@ The application will be served via Nginx at `http://localhost:8080`.
 If you want to build the images manually without Docker Compose:
 
 **Development:**
+
 ```bash
 docker build --target development -t client-dev .
 docker run -p 5173:5173 -v $(pwd):/app -v /app/node_modules client-dev
 ```
 
 **Production:**
+
 ```bash
 docker build --target production -t client-prod .
 docker run -p 8080:80 client-prod
