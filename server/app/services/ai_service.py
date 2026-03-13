@@ -1,5 +1,5 @@
 """
-AI Service using Anthropic Claude for:
+AI Service using OpenAI for:
 1. Eligibility screening (thematic + narrative analysis)
 2. Review package generation (summary, scores, risk flags)
 3. Compliance analysis (report vs application)
@@ -15,29 +15,32 @@ logger = logging.getLogger(__name__)
 
 def get_client():
     try:
-        import anthropic
-        return anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        import openai
+        return openai.OpenAI(api_key=settings.OPENAI_API_KEY)
     except Exception as e:
-        logger.warning(f"Could not initialize Anthropic client: {e}")
+        logger.warning(f"Could not initialize OpenAI client: {e}")
         return None
 
 
-def _call_claude(system_prompt: str, user_prompt: str, max_tokens: int = 2000) -> Optional[str]:
-    """Make a Claude API call, returns text or None on failure"""
+def _call_openai(system_prompt: str, user_prompt: str, max_tokens: int = 2000) -> Optional[str]:
+    """Make an OpenAI API call, returns text or None on failure"""
     client = get_client()
-    if not client or not settings.ANTHROPIC_API_KEY:
-        logger.warning("Anthropic API not configured, using fallback")
+    if not client or not settings.OPENAI_API_KEY:
+        logger.warning("OpenAI API not configured, using fallback")
         return None
     try:
-        message = client.messages.create(
-            model="claude-sonnet-4-6",
+        response = client.chat.completions.create(
+            model=settings.OPENAI_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
             max_tokens=max_tokens,
-            messages=[{"role": "user", "content": user_prompt}],
-            system=system_prompt,
+            temperature=0.7,
         )
-        return message.content[0].text
+        return response.choices[0].message.content
     except Exception as e:
-        logger.error(f"Claude API error: {e}")
+        logger.error(f"OpenAI API error: {e}")
         return None
 
 
@@ -69,7 +72,7 @@ Target Beneficiaries: {project.get("target_beneficiaries", project.get("number_o
 
 Please analyse this application for thematic alignment with {grant_type} objectives and narrative quality."""
 
-    result = _call_claude(system_prompt, user_prompt)
+    result = _call_openai(system_prompt, user_prompt)
 
     if result:
         try:
@@ -139,7 +142,7 @@ Budget Total: INR {budget.get("total_amount_requested", budget.get("total_reques
 Experience: {experience.get("relevant_prior_projects", experience.get("team_expertise_description", "N/A"))}
 Prior Grants: {experience.get("has_received_grants_before", "N/A")}"""
 
-    result = _call_claude(system_prompt, user_prompt, max_tokens=3000)
+    result = _call_openai(system_prompt, user_prompt, max_tokens=3000)
 
     if result:
         try:
@@ -204,7 +207,7 @@ Progress on Outcomes: {report_data.get("progress_on_outcomes", "N/A")}
 Challenges: {report_data.get("key_challenges", "N/A")}
 Budget Line Expenditure: {json.dumps(report_data.get("expenditure_by_budget_line", {}))}"""
 
-    result = _call_claude(system_prompt, user_prompt, max_tokens=2000)
+    result = _call_openai(system_prompt, user_prompt, max_tokens=2000)
 
     if result:
         try:
@@ -255,7 +258,7 @@ Respond ONLY with valid JSON."""
     messages = [{"role": m["role"], "content": m["content"]} for m in conversation_history]
 
     client = get_client()
-    if not client or not settings.ANTHROPIC_API_KEY:
+    if not client or not settings.OPENAI_API_KEY:
         return {
             "message": "Welcome! I'll help you fill out your grant application. Let's start with your organisation details. What is the legal name of your organisation?",
             "extracted_data": {},
@@ -264,13 +267,20 @@ Respond ONLY with valid JSON."""
         }
 
     try:
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
+        # Prepend system prompt to messages for OpenAI
+        api_messages = [{"role": "system", "content": system_prompt}]
+        if messages:
+            api_messages.extend(messages)
+        else:
+            api_messages.append({"role": "user", "content": "Start the application process"})
+
+        response = client.chat.completions.create(
+            model=settings.OPENAI_MODEL,
+            messages=api_messages,
             max_tokens=1000,
-            system=system_prompt,
-            messages=messages if messages else [{"role": "user", "content": "Start the application process"}],
+            temperature=0.7,
         )
-        text = response.content[0].text
+        text = response.choices[0].message.content
         clean = text.strip()
         if clean.startswith("```"):
             clean = clean.split("```")[1]
