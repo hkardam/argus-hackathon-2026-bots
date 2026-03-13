@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS applications (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_app_programme_id ON applications(programme_id);
-CREATE INDEX idx_app_organisation_id ON applications(organisation_id);
+CREATE INDEX IF NOT EXISTS idx_app_programme_id ON applications(programme_id);
+CREATE INDEX IF NOT EXISTS idx_app_organisation_id ON applications(organisation_id);
 
 CREATE TABLE IF NOT EXISTS application_section_data (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-CREATE INDEX idx_review_application_id ON reviews(application_id);
+CREATE INDEX IF NOT EXISTS idx_review_application_id ON reviews(application_id);
 
 CREATE TABLE IF NOT EXISTS risk_flags (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS reports (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_report_grant_id ON reports(grant_award_id);
+CREATE INDEX IF NOT EXISTS idx_report_grant_id ON reports(grant_award_id);
 
 CREATE TABLE IF NOT EXISTS compliance_analyses (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

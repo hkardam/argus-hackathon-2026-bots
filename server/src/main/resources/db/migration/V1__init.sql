@@ -1,11 +1,13 @@
 CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    oauth2_provider_id VARCHAR(255),
-    role VARCHAR(50) NOT NULL,
-    password_hash VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+  id BIGSERIAL PRIMARY KEY,
+  "name" varchar(255) NULL,
+  email varchar(255) NULL UNIQUE,
+  oauth2_provider_id varchar(255) NULL,
+  "role" varchar(50) NULL,
+  password_hash varchar(255) NULL,
+  created_at timestamptz NULL,
+  is_email_verified bool NOT NULL,
+  is_active bool NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS audit_logs (

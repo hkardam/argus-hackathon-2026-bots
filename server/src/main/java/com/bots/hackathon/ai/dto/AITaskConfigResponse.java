@@ -10,12 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AITaskConfigResponse {
-        private Long id;
-        private String taskCode;
-        private String taskName;
-        private String systemPrompt;
-        private LLMProviderEnum provider;
-        private String model;
-        private Integer maxTokens;
-        private Double temperature;
+    private Long id;
+    private String taskCode;
+    private String taskName;
+    private String systemPrompt;
+    private LLMProviderEnum provider;
+    private String model;
+    private Integer maxTokens;
+    private Double temperature;
 }

@@ -1,9 +1,5 @@
 package com.bots.hackathon.ai.services;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.bots.hackathon.ai.dto.ChatRequest;
 import com.bots.hackathon.ai.dto.ChatResponse;
 import com.bots.hackathon.ai.dto.LLMRequest;
@@ -14,8 +10,9 @@ import com.bots.hackathon.ai.model.ChatbotMessage;
 import com.bots.hackathon.ai.repo.AITaskConfigRepo;
 import com.bots.hackathon.ai.repo.ChatbotTextRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +30,13 @@ public class ChatbotService {
             tempTaskCode = (String) request.getMetadata().get("taskCode");
         }
         final String finalTaskCode = tempTaskCode;
-        AITaskConfig config = configRepo.findByTaskCode(finalTaskCode)
-                .orElseThrow(() -> new RuntimeException("AI Task Config not found: " + finalTaskCode));
+        AITaskConfig config =
+                configRepo
+                        .findByTaskCode(finalTaskCode)
+                        .orElseThrow(
+                                () ->
+                                        new RuntimeException(
+                                                "AI Task Config not found: " + finalTaskCode));
 
         // 2. Get chat history
         List<ChatbotMessage> history = chatRepo.findBySessionIdOrderByCreatedAtAsc(sessionId);
@@ -56,7 +58,7 @@ public class ChatbotService {
 
         // 5. Prepare LLMRequest
         LLMRequest llmRequest = new LLMRequest();
-        llmRequest.setSystemPromt(config.getSystemPrompt());
+        llmRequest.setSystemPrompt(config.getSystemPrompt());
         llmRequest.setUserPrompt(request.getMessage());
         llmRequest.setProvider(config.getProvider());
 

@@ -9,11 +9,10 @@ import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GeminiProvider implements LLMProvider {
@@ -29,12 +28,12 @@ public class GeminiProvider implements LLMProvider {
     @PostConstruct
     public void init() {
         if (apiKey == null || apiKey.isBlank()) {
-            throw new IllegalStateException("Gemini API key is missing");
+            // TODO: change
+            return;
+            //            throw new IllegalStateException("Gemini API key is missing");
         }
 
-        client = Client.builder()
-                .apiKey(apiKey)
-                .build();
+        client = Client.builder().apiKey(apiKey).build();
     }
 
     @Override
@@ -44,17 +43,16 @@ public class GeminiProvider implements LLMProvider {
 
         GenerateContentConfig.Builder configBuilder = GenerateContentConfig.builder();
 
-        if (request.getSystemPromt() != null && !request.getSystemPromt().isBlank()) {
+        if (request.getSystemPrompt() != null && !request.getSystemPrompt().isBlank()) {
             configBuilder.systemInstruction(
-                    Content.fromParts(
-                            Part.fromText(request.getSystemPromt())));
+                    Content.fromParts(Part.fromText(request.getSystemPrompt())));
         }
 
-        GenerateContentResponse response = client.models.generateContent(
-                defaultModel,
-                Content.fromParts(
-                        Part.fromText(buildUserMessage(request))),
-                configBuilder.build());
+        GenerateContentResponse response =
+                client.models.generateContent(
+                        defaultModel,
+                        Content.fromParts(Part.fromText(buildUserMessage(request))),
+                        configBuilder.build());
 
         LLMResponse llmResponse = new LLMResponse();
 
@@ -72,12 +70,7 @@ public class GeminiProvider implements LLMProvider {
                 && response.usageMetadata() != null
                 && response.usageMetadata().isPresent()) {
 
-            tokensUsed = response
-                    .usageMetadata()
-                    .get()
-                    .totalTokenCount()
-                    .orElse(0)
-                    .intValue();
+            tokensUsed = response.usageMetadata().get().totalTokenCount().orElse(0).intValue();
         }
 
         llmResponse.setTokensUsed(tokensUsed);
@@ -95,9 +88,7 @@ public class GeminiProvider implements LLMProvider {
         StringBuilder sb = new StringBuilder();
 
         if (request.getUserContextText() != null && !request.getUserContextText().isBlank()) {
-            sb.append("Context:\n")
-                    .append(request.getUserContextText())
-                    .append("\n\n");
+            sb.append("Context:\n").append(request.getUserContextText()).append("\n\n");
         }
 
         List<String> files = request.getUserContextFiles();
@@ -105,9 +96,7 @@ public class GeminiProvider implements LLMProvider {
 
             sb.append("Files Context:\n");
 
-            files.stream()
-                    .filter(Objects::nonNull)
-                    .forEach(file -> sb.append(file).append("\n"));
+            files.stream().filter(Objects::nonNull).forEach(file -> sb.append(file).append("\n"));
 
             sb.append("\n");
         }

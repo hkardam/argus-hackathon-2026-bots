@@ -1,0 +1,35 @@
+-- Seed data for Grant Programmes
+INSERT INTO grant_programmes (id, name, description, grant_type, total_budget, max_award_amount, application_open_date, application_close_date, current_stage, is_active)
+VALUES 
+(gen_random_uuid(), 
+ 'Community Development Grant (CDG)', 
+ 'Fund community-level infrastructure and social service projects. Eligible for Registered NGOs, Trusts, Section 8 Companies with minimum 2 years of operation. Geographic Focus: Rural and semi-urban areas in India.', 
+ 'COMMUNITY', 
+ 20000000.00, 
+ 2000000.00, 
+ '2026-04-01', 
+ '2026-06-30', 
+ 'SUBMISSION', 
+ TRUE),
+
+(gen_random_uuid(), 
+ 'Education Innovation Grant (EIG)', 
+ 'Fund technology-enabled or pedagogy-innovation projects improving learning outcomes in government schools. Eligible for NGOs, EdTech non-profits, Research institutions, Universities. Geographic Focus: Any state in India; preference for aspirational districts.', 
+ 'INNOVATION', 
+ 50000000.00, 
+ 5000000.00, 
+ '2026-01-01', 
+ '2026-12-31', 
+ 'SUBMISSION', 
+ TRUE),
+
+(gen_random_uuid(), 
+ 'Environment & Climate Action Grant (ECAG)', 
+ 'Fund grassroots environmental conservation, climate resilience, and clean energy access projects. Eligible for NGOs, Farmer Producer Organisations (FPOs), Panchayat bodies, Research institutions. Priority given to climate-vulnerable districts.', 
+ 'RESEARCH', 
+ 30000000.00, 
+ 3000000.00, 
+ '2026-07-01', 
+ '2026-08-31', 
+ 'SUBMISSION', 
+ TRUE);

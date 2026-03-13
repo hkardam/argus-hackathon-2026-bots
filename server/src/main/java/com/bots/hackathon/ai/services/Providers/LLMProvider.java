@@ -5,7 +5,7 @@ import com.bots.hackathon.ai.dto.LLMRequest;
 import com.bots.hackathon.ai.dto.LLMResponse;
 
 public interface LLMProvider {
-  LLMResponse execute(LLMRequest request);
+    LLMResponse execute(LLMRequest request);
 
-  LLMProviderEnum getProviderType();
+    LLMProviderEnum getProviderType();
 }

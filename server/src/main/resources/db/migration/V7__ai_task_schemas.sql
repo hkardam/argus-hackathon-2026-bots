@@ -1,4 +1,4 @@
-CREATE TABLE ai_task_config (
+CREATE TABLE IF NOT EXISTS ai_task_config (
     id BIGSERIAL PRIMARY KEY,
     task_code VARCHAR(255) NOT NULL UNIQUE,
     task_name VARCHAR(255) NOT NULL,
@@ -9,4 +9,4 @@ CREATE TABLE ai_task_config (
     temperature DOUBLE PRECISION NOT NULL
 );
 
-CREATE INDEX idx_ai_task_code ON ai_task_config(task_code);
+CREATE INDEX IF NOT EXISTS idx_ai_task_code ON ai_task_config(task_code);
