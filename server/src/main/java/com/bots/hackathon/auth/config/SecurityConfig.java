@@ -35,35 +35,32 @@ public class SecurityConfig {
     private static final List<String> PUBLIC_ENDPOINTS =
             List.of("/api/auth/login", "/api/auth/oauth2/**", "/api/auth/health");
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(
-                        exceptions ->
-                                exceptions
-                                        .authenticationEntryPoint(authenticationEntryPoint)
-                                        .accessDeniedHandler(accessDeniedHandler))
-                .authorizeHttpRequests(
-                        authorize ->
-                                authorize
-                                        .requestMatchers(PUBLIC_ENDPOINTS.toArray(String[]::new))
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
-                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable()) // Disabled for stateless APIs
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    // Allow unauthenticated access to public endpoints (if any)
+                    .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/oauth2/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .httpBasic(basic -> basic.disable())
+        // Add custom filters before the UsernamePasswordAuthenticationFilter
+        .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

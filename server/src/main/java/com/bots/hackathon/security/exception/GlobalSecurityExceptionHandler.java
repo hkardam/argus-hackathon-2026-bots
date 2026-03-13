@@ -12,18 +12,32 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class GlobalSecurityExceptionHandler {
 
-    @InitBinder
-    public void setAllowedFields(WebDataBinder dataBinder) {
-        String[] disallowedFields =
-                new String[] {"id", "createdAt", "updatedAt", "role", "passwordHash"};
-        dataBinder.setDisallowedFields(disallowedFields);
-    }
+  @InitBinder
+  public void setAllowedFields(WebDataBinder dataBinder) {
+    // Prevent Mass Assignment attacks by restricting allowed fields explicitly in controllers, or by avoiding binding internal fields.
+    // A generic protective approach:
+    String[] disallowedFields =
+        new String[] {"id", "createdAt", "updatedAt", "role", "passwordHash"};
+    dataBinder.setDisallowedFields(disallowedFields);
+  }
+
+  @ExceptionHandler(ResponseStatusException.class)
+  public ResponseEntity<Map<String, String>> handleResponseStatusException(
+      ResponseStatusException ex) {
+    Map<String, String> body = new HashMap<>();
+    String reason = ex.getReason() != null ? ex.getReason() : ex.getStatusCode().toString();
+    body.put("error", reason);
+    body.put("message", reason);
+    return ResponseEntity.status(ex.getStatusCode()).body(body);
+  }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
