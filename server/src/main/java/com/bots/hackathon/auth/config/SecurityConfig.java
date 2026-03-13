@@ -6,11 +6,12 @@ import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -36,16 +37,21 @@ public class SecurityConfig {
             authorize ->
                 authorize
                     // Allow unauthenticated access to public endpoints (if any)
-                    .requestMatchers("/api/auth/login", "/api/auth/oauth2/**")
+                    .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/oauth2/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .httpBasic(Customizer.withDefaults()) // Enable basic auth
+        .httpBasic(basic -> basic.disable())
         // Add custom filters before the UsernamePasswordAuthenticationFilter
         .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 
   @Bean

@@ -4,6 +4,7 @@
  */
 
 import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HeroSection from './features/grants/components/HeroSection';
@@ -11,6 +12,9 @@ import GrantCard from './features/grants/components/GrantCard';
 import EligibilityCheck from './features/eligibility/components/EligibilityCheck';
 import ApplicantLayout from './features/applicant-dashboard/components/ApplicantLayout';
 import ApplicantDashboard from './features/applicant-dashboard/components/ApplicantDashboard';
+import LoginPage from './features/auth/components/LoginPage';
+import SignupPage from './features/auth/components/SignupPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const GRANTS = [
   {
@@ -44,32 +48,39 @@ const GRANTS = [
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-page font-sans selection:bg-primary-selection selection:text-primary-dark">
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Header />
-            <main>
-              <HeroSection />
+    <AuthProvider>
+      <div className="min-h-screen bg-page font-sans selection:bg-primary-selection selection:text-primary-dark">
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Header />
+              <main>
+                <HeroSection />
+                <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {GRANTS.map((grant, index) => (
+                      <GrantCard key={index} {...grant} />
+                    ))}
+                  </div>
+                </section>
+                <EligibilityCheck />
+              </main>
+              <Footer />
+            </>
+          } />
 
-              <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {GRANTS.map((grant, index) => (
-                    <GrantCard key={index} {...grant} />
-                  ))}
-                </div>
-              </section>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
 
-              <EligibilityCheck />
-            </main>
-            <Footer />
-          </>
-        } />
-
-        <Route path="/dashboard" element={<ApplicantLayout />}>
-          <Route index element={<ApplicantDashboard />} />
-        </Route>
-      </Routes>
-    </div>
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <ApplicantLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<ApplicantDashboard />} />
+          </Route>
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
