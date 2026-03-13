@@ -7,7 +7,6 @@
 
 ---
 
-
 ## 📋 Project Structure
 
 ```
@@ -23,8 +22,12 @@ argus-hackathon-2026-bots/
 │   └── Dockerfile         # Dev & prod targets
 ├── docker-compose.yml      # Full stack setup
 ├── .agents/
-│   ├── rules/             # Quality & architectural rules
-│   └── skills/            # Custom skills
+│   ├── skills/             # Custom skills
+│   └── rules/              # Development rules
+│       ├── backend-rule.md
+│       ├── backend-quality.rule.md
+│       ├── frontend-quality.md
+│       └── frontend-rule.md
 └── CLAUDE.md              # This file
 
 **Ports:**
@@ -39,10 +42,12 @@ argus-hackathon-2026-bots/
 Strictly follow these rules for every task. They define our architectural standards and automated workflows.
 
 ### Backend Rules (server/)
+
 - **Architecture & Patterns**: [.agents/rules/backend-rule.md](.agents/rules/backend-rule.md) - Recursive modular structure, DTO/Entity isolation, Java 21 records.
 - **Code Quality & Formatting**: [.agents/rules/backend-quality.rule.md](.agents/rules/backend-quality.rule.md) - No manual formatting; use `./mvnw spotless:apply`.
 
 ### Frontend Rules (client/)
+
 - **Architecture & Quality**: [.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md) - Feature-based structure, pure components, TanStack Query for state.
 - **Formatting**: [client/frontend-rule.md](client/frontend-rule.md) - No manual formatting; use `npm run format`.
 
@@ -59,14 +64,12 @@ When you receive the problem statement:
 3. **Divide work** by frontend, backend, integration
 4. **Assign tasks** to team members
 
-
 ### Phase 2: Planning & Setup (30-45 min)
 
 1. **Use `writing-plans` skill**: Create detailed implementation plan with parallel tasks
 2. **Use `dispatching-parallel-agents` skill**: Run subagents for each team member's area
 3. **Create git branches** for isolated work
 4. **Use `using-git-worktrees` skill**: Each person works in isolated worktree
-
 
 ### Phase 3: Implementation (5 hours)
 
@@ -81,13 +84,13 @@ When you receive the problem statement:
 
 - Every 30-45 min: **Use `requesting-code-review` skill** - Ask for a review
 - The agent will spot bugs, suggest improvements, verify against requirements
+
 ### Phase 4: Integration & Polish (45 min)
 
 1. **Merge branches** from all 4 team members
 2. **Run full test suite**
 3. **Use `verification-before-completion` skill**: Verify entire app works end-to-end
 4. **Quick bug fixes** (use `systematic-debugging`)
-
 
 ---
 
@@ -99,19 +102,19 @@ When you receive the problem statement:
 
 **When:** After problem statement is understood, before anyone codes.
 
-**Who:** Person 2 (API Integration Lead) + Person 3 (Backend Lead)
+**Who:** Frontend & Backend leads (whoever handles API integration + backend)
 
 **Steps:**
 
 1. **Agree on endpoints** (30 min)
 
    ```
-   Backend Person (Person 3) lists all APIs:
+   Backend team lists all APIs:
    - GET /api/users → returns User[]
    - POST /api/users → creates User → returns User
    - GET /api/users/:id → returns User
 
-   Frontend Person (Person 2) confirms:
+   Frontend team confirms:
    ✓ What data does frontend need?
    ✓ What order/format?
    ✓ Any extra fields needed?
@@ -138,10 +141,10 @@ When you receive the problem statement:
 3. **Test the contract** (before implementation)
 
    ```
-   Backend Person: Write API endpoint stub
+   Backend team: Write API endpoint stub
    - Returns mock data in agreed format
 
-   Frontend Person: Write fetch hook
+   Frontend team: Write fetch hook
    - Calls API, parses response
    - Verify types match
    ```
@@ -444,10 +447,10 @@ T+2h55min: ✓ SHIPPED to main
 **Divide by layers:**
 
 ```
-Person 1: Frontend Pages & Components (React/TypeScript)
-Person 2: Frontend API Integration & State (hooks/context)
-Person 3: Backend APIs & Controllers (Spring Boot)
-Person 4: Backend Business Logic & Database (services/repos)
+Frontend Pages & Components: React/TypeScript UI and page structure
+Frontend API Integration & State: API hooks, data fetching, state management
+Backend APIs & Controllers: REST endpoints and request handling
+Backend Business Logic & Database: Service layer, business rules, data persistence
 ```
 
 **Each person:**
@@ -547,7 +550,7 @@ Person 4: Backend Business Logic & Database (services/repos)
 
 ### Integration Testing
 
-- **Person responsible:** Person 2 (API integration)
+- **Who:** API integration developer (frontend-backend sync)
 - **When:** After both frontend & backend ready
 - **How:** Manual test + automated test
 - **Command:** Ask Claude to "Test [feature] end-to-end"
@@ -559,7 +562,7 @@ Person 4: Backend Business Logic & Database (services/repos)
 ### For Hackathon (Simplified)
 
 ```bash
-# Start feature (Person 1, 2, 3, 4 each do this)
+# Start feature (each team member does this for their assigned work)
 claude --worktree my-feature
 
 # Work in isolated branch
@@ -671,7 +674,7 @@ cd server && mvn clean package
 
 1. **Communicate early:** Agree on API contracts at T+30min
 2. **Test often:** Don't accumulate bugs (catch at T+1h, T+3h, T+5h)
-3. **Divide wisely:** Person 4 should finish first (less dependencies)
+3. **Divide wisely:** Backend logic layer finishes first (less dependencies)
 4. **Code review fast:** 5-15 min reviews catch 80% of bugs
 5. **Don't over-engineer:** Good enough > perfect (it's hackathon)
 6. **Use Agent:** For code review + debugging (saves hours)
@@ -682,7 +685,10 @@ cd server && mvn clean package
 ## 📚 Essential Skills Reference (18 Total)
 
 **All custom skills are in** `.agents/skills/`
-**Development Rules:** [.agents/rules/](.agents/rules/)
+**Development rules:** `.agents/rules/`
+
+- **Frontend:** [.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md), [.agents/rules/frontend-rule.md](.agents/rules/frontend-rule.md)
+- **Backend:** [.agents/rules/backend-quality.rule.md](.agents/rules/backend-quality.rule.md)
 
 **CORE (Use Every Task):**
 
@@ -715,11 +721,19 @@ cd server && mvn clean package
 **FRONTEND-SPECIFIC:**
 
 - 📖 **[.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md)** - Comprehensive React architecture, patterns, and best practices
+- 📖 **[.agents/rules/frontend-rule.md](.agents/rules/frontend-rule.md)** - Frontend formatting & code style automation
 - `react-component-development` - Pure component patterns, props design, state in components
 - `react-state-management` - Decision tree for useState vs React Query vs Zustand
 - `react-api-integration` - API contracts, client setup, React Query patterns
 - `react-testing` - Component/hook testing by behavior, mocking, assertions
 - `frontend-workflow` - 5-phase feature implementation (understand → setup → test → integrate → verify)
+
+**BACKEND-SPECIFIC:**
+
+- 📖 **[.agents/rules/backend-quality.rule.md](.agents/rules/backend-quality.rule.md)** - Backend formatting & code style automation
+- Spring Boot 3 service layer patterns
+- REST API design best practices
+- Database/repository patterns
 
 ---
 
@@ -753,18 +767,20 @@ Example:
 
 ---
 
-## 📞 Team Roles (Suggested)
+## 📞 Recommended Work Areas
 
-For **8-hour sprint with 4 people:**
+For **8-hour sprint with 4 people**, divide work by layers:
 
-| Role                | Person   | Focus                              | Frontend Skills                                   |
-| ------------------- | -------- | ---------------------------------- | ------------------------------------------------- |
-| **Frontend Lead**   | Person 1 | Pages, components, styling         | `react-component-development`, `react-testing`    |
-| **API Integration** | Person 2 | Frontend ↔ Backend contract, hooks | `react-api-integration`, `react-state-management` |
-| **Backend Lead**    | Person 3 | Controllers, routing, APIs         | (See backend skills)                              |
-| **Data/Logic**      | Person 4 | Services, business logic, database | (See backend skills)                              |
+| Work Area           | Focus                              | Required Skills                                   |
+| ------------------- | ---------------------------------- | ------------------------------------------------- |
+| **Frontend UI**     | Pages, components, styling         | `react-component-development`, `react-testing`    |
+| **Frontend Integration** | Frontend ↔ Backend contract, hooks | `react-api-integration`, `react-state-management` |
+| **Backend APIs**    | Controllers, routing, REST endpoints | (See backend skills)                              |
+| **Backend Logic**   | Services, business logic, database | (See backend skills)                              |
 
-**Frontend Start:** Person 1 & 2 should read [.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md) and use `frontend-workflow` skill to guide implementation.
+**Frontend Teams:** Read [.agents/rules/frontend-quality.md](.agents/rules/frontend-quality.md) and use `frontend-workflow` skill to guide implementation.
+
+**Backend Teams:** Read [.agents/rules/backend-quality.rule.md](.agents/rules/backend-quality.rule.md) for formatting requirements.
 
 **Transition:** At T+5h, all shift to integration + bug fixes (everyone helps)
 
