@@ -1,4 +1,4 @@
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter } from 'lucide-react'
 
 export default function HeroSection() {
   return (
@@ -8,7 +8,8 @@ export default function HeroSection() {
           Explore Grant Programmes
         </h1>
         <p className="text-lg md:text-xl text-muted mb-10">
-          Browse available grants and check eligibility before applying. Discover funding opportunities to accelerate your impact.
+          Browse available grants and check eligibility before applying.
+          Discover funding opportunities to accelerate your impact.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto">
@@ -29,5 +30,5 @@ export default function HeroSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

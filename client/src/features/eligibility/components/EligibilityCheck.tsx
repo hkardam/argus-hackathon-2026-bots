@@ -1,33 +1,40 @@
-import { useState } from 'react';
-import { CheckCircle2, XCircle, HelpCircle, ArrowRight } from 'lucide-react';
+import { useState } from 'react'
+import { CheckCircle2, XCircle, HelpCircle, ArrowRight } from 'lucide-react'
 
 export default function EligibilityCheck() {
-  const [isChecking, setIsChecking] = useState(false);
-  const [showResults, setShowResults] = useState(false);
+  const [isChecking, setIsChecking] = useState(false)
+  const [showResults, setShowResults] = useState(false)
 
   const handleCheck = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsChecking(true);
+    e.preventDefault()
+    setIsChecking(true)
     // Simulate API call
     setTimeout(() => {
-      setIsChecking(false);
-      setShowResults(true);
-    }, 1500);
-  };
+      setIsChecking(false)
+      setShowResults(true)
+    }, 1500)
+  }
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="bg-dark rounded-3xl overflow-hidden shadow-xl">
         <div className="grid grid-cols-1 lg:grid-cols-2">
-
           {/* Form Section */}
           <div className="p-8 md:p-12">
-            <h2 className="text-3xl font-bold text-white mb-2">Check Your Eligibility</h2>
-            <p className="text-dark-muted mb-8">Quickly test your eligibility for our grant programmes before starting an application.</p>
+            <h2 className="text-3xl font-bold text-white mb-2">
+              Check Your Eligibility
+            </h2>
+            <p className="text-dark-muted mb-8">
+              Quickly test your eligibility for our grant programmes before
+              starting an application.
+            </p>
 
             <form onSubmit={handleCheck} className="space-y-6">
               <div>
-                <label htmlFor="orgType" className="block text-sm font-medium text-dark-body mb-2">
+                <label
+                  htmlFor="orgType"
+                  className="block text-sm font-medium text-dark-body mb-2"
+                >
                   Organisation Type
                 </label>
                 <select
@@ -48,7 +55,10 @@ export default function EligibilityCheck() {
               </div>
 
               <div>
-                <label htmlFor="district" className="block text-sm font-medium text-dark-body mb-2">
+                <label
+                  htmlFor="district"
+                  className="block text-sm font-medium text-dark-body mb-2"
+                >
                   Project District
                 </label>
                 <input
@@ -61,7 +71,10 @@ export default function EligibilityCheck() {
               </div>
 
               <div>
-                <label htmlFor="amount" className="block text-sm font-medium text-dark-body mb-2">
+                <label
+                  htmlFor="amount"
+                  className="block text-sm font-medium text-dark-body mb-2"
+                >
                   Funding Amount Requested (INR)
                 </label>
                 <div className="relative">
@@ -93,7 +106,10 @@ export default function EligibilityCheck() {
             {!showResults && !isChecking && (
               <div className="text-center text-dark-muted flex flex-col items-center">
                 <HelpCircle className="h-16 w-16 mb-4 opacity-20" />
-                <p>Fill out the form to see which grants you might be eligible for.</p>
+                <p>
+                  Fill out the form to see which grants you might be eligible
+                  for.
+                </p>
               </div>
             )}
 
@@ -106,16 +122,23 @@ export default function EligibilityCheck() {
 
             {showResults && !isChecking && (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h3 className="text-xl font-semibold text-white mb-4">Your Eligibility Results</h3>
+                <h3 className="text-xl font-semibold text-white mb-4">
+                  Your Eligibility Results
+                </h3>
 
                 <div className="bg-dark/50 rounded-xl p-4 border border-primary-ring/20">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-primary-muted shrink-0" />
                     <div>
-                      <h4 className="text-base font-medium text-white">Community Development Grant</h4>
-                      <p className="text-sm text-primary-muted mt-1 font-medium">Status: Likely Eligible</p>
+                      <h4 className="text-base font-medium text-white">
+                        Community Development Grant
+                      </h4>
+                      <p className="text-sm text-primary-muted mt-1 font-medium">
+                        Status: Likely Eligible
+                      </p>
                       <button className="mt-3 text-sm text-dark-body hover:text-white flex items-center transition-colors">
-                        Start Application <ArrowRight className="ml-1 h-3 w-3" />
+                        Start Application{' '}
+                        <ArrowRight className="ml-1 h-3 w-3" />
                       </button>
                     </div>
                   </div>
@@ -125,9 +148,15 @@ export default function EligibilityCheck() {
                   <div className="flex items-start gap-3">
                     <XCircle className="h-6 w-6 text-danger shrink-0" />
                     <div>
-                      <h4 className="text-base font-medium text-white">Education Innovation Grant</h4>
-                      <p className="text-sm text-danger mt-1 font-medium">Status: Likely Not Eligible</p>
-                      <p className="text-xs text-dark-muted mt-1">Reason: Requested funding exceeds programme limit</p>
+                      <h4 className="text-base font-medium text-white">
+                        Education Innovation Grant
+                      </h4>
+                      <p className="text-sm text-danger mt-1 font-medium">
+                        Status: Likely Not Eligible
+                      </p>
+                      <p className="text-xs text-dark-muted mt-1">
+                        Reason: Requested funding exceeds programme limit
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -136,21 +165,24 @@ export default function EligibilityCheck() {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-primary-muted shrink-0" />
                     <div>
-                      <h4 className="text-base font-medium text-white">Environment & Climate Action Grant</h4>
-                      <p className="text-sm text-primary-muted mt-1 font-medium">Status: Likely Eligible</p>
+                      <h4 className="text-base font-medium text-white">
+                        Environment & Climate Action Grant
+                      </h4>
+                      <p className="text-sm text-primary-muted mt-1 font-medium">
+                        Status: Likely Eligible
+                      </p>
                       <button className="mt-3 text-sm text-dark-body hover:text-white flex items-center transition-colors">
-                        Start Application <ArrowRight className="ml-1 h-3 w-3" />
+                        Start Application{' '}
+                        <ArrowRight className="ml-1 h-3 w-3" />
                       </button>
                     </div>
                   </div>
                 </div>
-
               </div>
             )}
           </div>
-
         </div>
       </div>
     </section>
-  );
+  )
 }

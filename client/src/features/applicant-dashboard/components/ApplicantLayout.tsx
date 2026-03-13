@@ -1,37 +1,60 @@
-import { useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, Award, MessageSquare, Folder, Building, LogOut, Bell, Leaf, Menu } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
+import { useState } from 'react'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import {
+  LayoutDashboard,
+  FileText,
+  Award,
+  MessageSquare,
+  Folder,
+  Building,
+  LogOut,
+  Bell,
+  Leaf,
+  Menu,
+} from 'lucide-react'
+import { useAuth } from '../../../context/AuthContext'
 
 export default function ApplicantLayout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { logout } = useAuth();
-  const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const { logout } = useAuth()
+  const navigate = useNavigate()
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+    logout()
+    navigate('/')
+  }
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'My Applications', path: '/dashboard/applications', icon: FileText },
+    {
+      name: 'My Applications',
+      path: '/dashboard/applications',
+      icon: FileText,
+    },
     { name: 'My Grants', path: '/dashboard/grants', icon: Award },
     { name: 'Messages', path: '/dashboard/messages', icon: MessageSquare },
     { name: 'Document Vault', path: '/dashboard/documents', icon: Folder },
-    { name: 'Organisation Profile', path: '/dashboard/profile', icon: Building },
-  ];
+    {
+      name: 'Organisation Profile',
+      path: '/dashboard/profile',
+      icon: Building,
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-200 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:block flex flex-col`}>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-200 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:block flex flex-col`}
+      >
         <div className="h-16 flex items-center px-6 border-b border-slate-100">
           <Link to="/" className="flex items-center gap-2">
             <div className="bg-emerald-600 p-1.5 rounded-lg">
               <Leaf className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight">GrantFlow</span>
+            <span className="text-xl font-bold text-slate-900 tracking-tight">
+              GrantFlow
+            </span>
           </Link>
         </div>
 
@@ -57,7 +80,10 @@ export default function ApplicantLayout() {
         </nav>
 
         <div className="p-4 border-t border-slate-100">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-colors">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+          >
             <LogOut className="h-5 w-5" />
             Logout
           </button>
@@ -76,7 +102,9 @@ export default function ApplicantLayout() {
               <Menu className="h-5 w-5" />
             </button>
             <div className="hidden sm:flex items-center text-sm font-medium text-slate-500">
-              <Link to="/" className="hover:text-emerald-600 transition-colors">Explore Grants</Link>
+              <Link to="/" className="hover:text-emerald-600 transition-colors">
+                Explore Grants
+              </Link>
             </div>
           </div>
 
@@ -105,5 +133,5 @@ export default function ApplicantLayout() {
         />
       )}
     </div>
-  );
+  )
 }

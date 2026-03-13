@@ -1,35 +1,41 @@
-import { useState, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, Eye, EyeOff } from 'lucide-react';
-import axios from 'axios';
-import { useAuth } from '../../../context/AuthContext';
+import { useState, FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Leaf, Eye, EyeOff } from 'lucide-react'
+import axios from 'axios'
+import { useAuth } from '../../../context/AuthContext'
 
 export default function LoginPage() {
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+    e.preventDefault()
+    setError('')
+    setLoading(true)
 
     try {
-      const { data } = await axios.post('http://localhost:8086/api/auth/login', { email, password });
-      login(data.token, data.user);
-      navigate('/dashboard');
+      const { data } = await axios.post(
+        'http://localhost:8086/api/auth/login',
+        { email, password },
+      )
+      login(data.token, data.user)
+      navigate('/dashboard')
     } catch (err: any) {
-      const msg = err.response?.data?.message || err.response?.data || 'Invalid email or password';
-      setError(typeof msg === 'string' ? msg : 'Invalid email or password');
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data ||
+        'Invalid email or password'
+      setError(typeof msg === 'string' ? msg : 'Invalid email or password')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-page flex items-center justify-center px-4">
@@ -51,11 +57,13 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-body mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-body mb-1.5">
+                Email
+              </label>
               <input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="you@example.com"
                 className="w-full px-4 py-2.5 rounded-lg bg-page border border-border-medium text-body placeholder:text-subtle focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
@@ -63,12 +71,14 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-body mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-body mb-1.5">
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
                   className="w-full px-4 py-2.5 pr-11 rounded-lg bg-page border border-border-medium text-body placeholder:text-subtle focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
@@ -78,7 +88,11 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-subtle hover:text-muted"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -94,12 +108,15 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-sm text-muted">
             Don't have an account?{' '}
-            <Link to="/signup" className="text-primary hover:underline font-medium">
+            <Link
+              to="/signup"
+              className="text-primary hover:underline font-medium"
+            >
               Sign up
             </Link>
           </p>
         </div>
       </div>
     </div>
-  );
+  )
 }
