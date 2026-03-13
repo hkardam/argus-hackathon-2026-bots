@@ -25,6 +25,7 @@ public class AITaskConfig {
     /**
      * Human readable name
      */
+    @Column(nullable = false)
     private String taskName;
 
     /**
@@ -43,15 +44,18 @@ public class AITaskConfig {
      * Optional model override
      * Example: claude-sonnet-4-6, gemini-2.0-flash
      */
+    @Column()
     private String model;
 
     /**
      * Max tokens for generation
      */
+    @Column()
     private Integer maxTokens;
 
     /**
      * Temperature for randomness
      */
+    @Column()
     private Double temperature;
 }

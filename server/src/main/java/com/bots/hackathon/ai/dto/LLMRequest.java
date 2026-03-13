@@ -9,8 +9,11 @@ import lombok.Setter;
 @Setter
 public class LLMRequest {
     private String userPrompt;
-    private String systemPromt;
+    private String systemPrompt;
     private String userContextText;
     private List<String> userContextFiles;
     private LLMProviderEnum provider;
+    private String model;
+    private Integer maxTokens;
+    private Double temperature;
 }

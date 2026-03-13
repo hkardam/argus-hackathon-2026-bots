@@ -1,12 +1,21 @@
 package com.bots.hackathon.ai.dto;
 
-public record AITaskConfigResponse(
-        Long id,
-        String taskCode,
-        String taskName,
-        String systemPrompt,
-        LLMProviderEnum provider,
-        String model,
-        Integer maxTokens,
-        Double temperature
-) {}
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class AITaskConfigResponse {
+        private Long id;
+        private String taskCode;
+        private String taskName;
+        private String systemPrompt;
+        private LLMProviderEnum provider;
+        private String model;
+        private Integer maxTokens;
+        private Double temperature;
+}

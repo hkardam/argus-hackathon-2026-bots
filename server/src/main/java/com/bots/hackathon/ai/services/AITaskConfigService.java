@@ -25,6 +25,12 @@ public class AITaskConfigService {
                 .orElseThrow(() -> new RuntimeException("AITaskConfig not found: " + id));
     }
 
+    public AITaskConfigResponse getByTaskCode(String code) {
+        return repo.findByTaskCode(code)
+                .map(this::toResponse)
+                .orElseThrow(() -> new RuntimeException("AITaskConfig not found: " + code));
+    }
+
     public AITaskConfigResponse create(AITaskConfigRequest request) {
         AITaskConfig entity = toEntity(request);
         return toResponse(repo.save(entity));
@@ -50,8 +56,7 @@ public class AITaskConfigService {
     private AITaskConfigResponse toResponse(AITaskConfig e) {
         return new AITaskConfigResponse(
                 e.getId(), e.getTaskCode(), e.getTaskName(), e.getSystemPrompt(),
-                e.getProvider(), e.getModel(), e.getMaxTokens(), e.getTemperature()
-        );
+                e.getProvider(), e.getModel(), e.getMaxTokens(), e.getTemperature());
     }
 
     private AITaskConfig toEntity(AITaskConfigRequest r) {
