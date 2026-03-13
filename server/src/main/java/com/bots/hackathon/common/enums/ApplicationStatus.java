@@ -12,6 +12,7 @@ public enum ApplicationStatus {
     APPROVED,
     REJECTED,
     AWARDED,
+    WAITLISTED,
     ACTIVE,
     COMPLETED,
     WITHDRAWN

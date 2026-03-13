@@ -8,11 +8,11 @@ import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
-import jakarta.annotation.PostConstruct;
-import java.util.List;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GeminiProvider implements LLMProvider {
@@ -25,7 +25,7 @@ public class GeminiProvider implements LLMProvider {
 
     private Client client;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException("Gemini API key is missing");

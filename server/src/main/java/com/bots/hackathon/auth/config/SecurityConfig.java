@@ -4,14 +4,13 @@ import com.bots.hackathon.security.exception.SecurityAccessDeniedHandler;
 import com.bots.hackathon.security.exception.SecurityAuthenticationEntryPoint;
 import com.bots.hackathon.security.filter.JwtAuthenticationFilter;
 import com.bots.hackathon.security.filter.RateLimitingFilter;
-import java.util.Arrays;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -33,28 +35,24 @@ public class SecurityConfig {
     private final SecurityAccessDeniedHandler accessDeniedHandler;
 
     private static final List<String> PUBLIC_ENDPOINTS =
-            List.of("/api/auth/login", "/api/auth/oauth2/**", "/api/auth/health");
+            List.of("/api/auth/login", "/api/auth/oauth2/**", "/api/auth/health", "/api/auth/signup");
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable()) // Disabled for stateless APIs
+                .csrf(AbstractHttpConfigurer::disable) // Disabled for stateless APIs
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
                                         // Allow unauthenticated access to public endpoints (if any)
-                                        .requestMatchers(
-                                                "/api/auth/login",
-                                                "/api/auth/signup",
-                                                "/api/auth/oauth2/**")
-                                        .permitAll()
+                                        .requestMatchers(PUBLIC_ENDPOINTS.toArray(new String[0])).permitAll()
                                         .requestMatchers("/api/admin/**")
                                         .hasRole("PLATFORM_ADMIN")
                                         .anyRequest()
                                         .authenticated())
-                .httpBasic(basic -> basic.disable())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 // Add custom filters before the UsernamePasswordAuthenticationFilter
                 .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(

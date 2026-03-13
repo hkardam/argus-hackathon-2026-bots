@@ -41,6 +41,12 @@ public class Review {
     @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
+    @Column(name = "dimension_scores_json", columnDefinition = "TEXT")
+    private String dimensionScoresJson;
+
+    @Column(name = "highlights_json", columnDefinition = "TEXT")
+    private String highlightsJson;
+
     @Column(name = "ai_suggested")
     @Builder.Default
     private Boolean aiSuggested = false;
