@@ -4,6 +4,22 @@ import { Leaf, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
 
+const ROLES = [
+  { value: 'APPLICANT', label: 'Applicant', description: 'Apply for grants and track your applications' },
+  { value: 'PROGRAM_OFFICER', label: 'Program Officer', description: 'Manage grant programs and review applications' },
+  { value: 'REVIEWER', label: 'Reviewer', description: 'Review and evaluate assigned grant applications' },
+  { value: 'FINANCE_OFFICER', label: 'Finance Officer', description: 'Oversee financial disbursements and reporting' },
+  { value: 'PLATFORM_ADMIN', label: 'Platform Admin', description: 'Full system access and administration' },
+];
+
+const ROLE_DASHBOARD: Record<string, string> = {
+  APPLICANT: '/dashboard',
+  PROGRAM_OFFICER: '/program-officer/dashboard',
+  REVIEWER: '/reviewer/dashboard',
+  FINANCE_OFFICER: '/finance/dashboard',
+  PLATFORM_ADMIN: '/admin/dashboard',
+};
+
 export default function SignupPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -11,6 +27,7 @@ export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('APPLICANT');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,9 +38,9 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post('http://localhost:8086/api/auth/register', { name, email, password });
+      const { data } = await axios.post('http://localhost:8086/api/auth/register', { name, email, password, role });
       login(data.token, data.user);
-      navigate('/dashboard');
+      navigate(ROLE_DASHBOARD[data.user.role] ?? '/dashboard');
     } catch (err: any) {
       const msg = err.response?.data?.message || err.response?.data || 'Registration failed';
       setError(typeof msg === 'string' ? msg : 'Registration failed');
@@ -73,6 +90,19 @@ export default function SignupPage() {
                 placeholder="you@example.com"
                 className="w-full px-4 py-2.5 rounded-lg bg-page border border-border-medium text-body placeholder:text-subtle focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-body mb-1.5">Role</label>
+              <select
+                value={role}
+                onChange={e => setRole(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg bg-page border border-border-medium text-body focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
+              >
+                {ROLES.map(r => (
+                  <option key={r.value} value={r.value}>{r.label} — {r.description}</option>
+                ))}
+              </select>
             </div>
 
             <div>

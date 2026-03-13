@@ -22,7 +22,14 @@ export default function LoginPage() {
     try {
       const { data } = await axios.post('http://localhost:8086/api/auth/login', { email, password });
       login(data.token, data.user);
-      navigate('/dashboard');
+      const roleDashboard: Record<string, string> = {
+        APPLICANT: '/dashboard',
+        PROGRAM_OFFICER: '/program-officer/dashboard',
+        REVIEWER: '/reviewer/dashboard',
+        FINANCE_OFFICER: '/finance/dashboard',
+        PLATFORM_ADMIN: '/admin/dashboard',
+      };
+      navigate(roleDashboard[data.user.role] ?? '/dashboard');
     } catch (err: any) {
       const msg = err.response?.data?.message || err.response?.data || 'Invalid email or password';
       setError(typeof msg === 'string' ? msg : 'Invalid email or password');

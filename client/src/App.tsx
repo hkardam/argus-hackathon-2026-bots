@@ -12,6 +12,14 @@ import GrantCard from './features/grants/components/GrantCard';
 import EligibilityCheck from './features/eligibility/components/EligibilityCheck';
 import ApplicantLayout from './features/applicant-dashboard/components/ApplicantLayout';
 import ApplicantDashboard from './features/applicant-dashboard/components/ApplicantDashboard';
+import ProgramOfficerLayout from './features/program-officer-dashboard/components/ProgramOfficerLayout';
+import ProgramOfficerDashboard from './features/program-officer-dashboard/components/ProgramOfficerDashboard';
+import ReviewerLayout from './features/reviewer-dashboard/components/ReviewerLayout';
+import ReviewerDashboard from './features/reviewer-dashboard/components/ReviewerDashboard';
+import FinanceLayout from './features/finance-dashboard/components/FinanceLayout';
+import FinanceDashboard from './features/finance-dashboard/components/FinanceDashboard';
+import AdminLayout from './features/admin-dashboard/components/AdminLayout';
+import AdminDashboard from './features/admin-dashboard/components/AdminDashboard';
 import LoginPage from './features/auth/components/LoginPage';
 import SignupPage from './features/auth/components/SignupPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -78,6 +86,38 @@ export default function App() {
             </ProtectedRoute>
           }>
             <Route index element={<ApplicantDashboard />} />
+          </Route>
+
+          <Route path="/program-officer" element={
+            <ProtectedRoute>
+              <ProgramOfficerLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="dashboard" element={<ProgramOfficerDashboard />} />
+          </Route>
+
+          <Route path="/reviewer" element={
+            <ProtectedRoute>
+              <ReviewerLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="dashboard" element={<ReviewerDashboard />} />
+          </Route>
+
+          <Route path="/finance" element={
+            <ProtectedRoute>
+              <FinanceLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="dashboard" element={<FinanceDashboard />} />
+          </Route>
+
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="dashboard" element={<AdminDashboard />} />
           </Route>
         </Routes>
       </div>
